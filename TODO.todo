@@ -1,0 +1,17 @@
+- produto {
+    titulo
+    descricao
+    caminho_imagem
+    valor - bigDecimal
+}
+
+- usuario {
+    email
+    senha senha encriptada
+    rule - enum ADMIN - REGULAR
+    contato whatsapp (numero)
+}
+
+integracao pagamento com whatsapp {
+    link  : https://wa.me/55%7Bnumeropessoa%7D?text={mensagemProduto}
+}
