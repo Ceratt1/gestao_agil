@@ -135,7 +135,7 @@ export default function FeaturedProducts() {
         <div className="mt-16 text-center">
           <Button asChild className="rounded-full bg-black text-white hover:bg-gray-800 px-8" size="lg">
             <a
-              href="https://wa.me/5500000000000?text=Olá,%20gostaria%20de%20ver%20mais%20produtos"
+              href="https://wa.me/555197274193?text=Olá,%20gostaria%20de%20ver%20mais%20produtos"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-2"

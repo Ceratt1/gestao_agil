@@ -59,14 +59,8 @@ export default function Header() {
         </nav>
 
         <div className="hidden md:flex items-center space-x-4">
-          <Button variant="ghost" size="icon" className="rounded-full">
-            <Search size={20} />
-          </Button>
-          <Button variant="ghost" size="icon" className="rounded-full">
-            <ShoppingBag size={20} />
-          </Button>
           <Button className="rounded-full bg-black text-white hover:bg-gray-800" size="sm">
-            <a href="https://wa.me/5500000000000" target="_blank" rel="noopener noreferrer">
+            <a href="https://wa.me/555197274193" target="_blank" rel="noopener noreferrer">
               Contato
             </a>
           </Button>
@@ -121,7 +115,7 @@ export default function Header() {
                 <ShoppingBag size={20} />
               </Button>
               <Button className="rounded-full bg-black text-white hover:bg-gray-800 w-full" size="sm">
-                <a href="https://wa.me/5500000000000" target="_blank" rel="noopener noreferrer">
+                <a href="https://wa.me/555197274193" target="_blank" rel="noopener noreferrer">
                   Contato via WhatsApp
                 </a>
               </Button>

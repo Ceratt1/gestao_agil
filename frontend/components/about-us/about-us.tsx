@@ -45,7 +45,7 @@ export default function AboutUs() {
                 <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-full bg-black text-white">
                   <Shield size={24} />
                 </div>
-                <h3 className="mb-2 text-lg font-medium">Garantia</h3>
+                <h3 className="mb-2 text-lg font-medium text-black">Garantia</h3>
                 <p className="text-sm text-gray-600">Todos os produtos com garantia e assistência técnica.</p>
               </div>
             </div>

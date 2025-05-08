@@ -26,8 +26,8 @@ export default function Hero() {
     <section className="relative bg-black text-white overflow-hidden">
       <div className="absolute inset-0 z-0">
         <div className="absolute inset-0 bg-gradient-to-r from-black via-black/90 to-black/70"></div>
-        <div className="absolute inset-0 bg-[url('/placeholder.svg?height=1080&width=1920')] bg-cover bg-center opacity-40 mix-blend-overlay"></div>
-      </div>
+        <div className="absolute inset-0 bg-[url('/hero.jpg')] bg-cover bg-center opacity-100 mix-blend-overlay"></div>
+        </div>
 
       <div className="container relative z-10 mx-auto px-4 py-28 md:py-40">
         <div className="flex flex-col items-center md:items-start max-w-4xl">
@@ -61,7 +61,7 @@ export default function Hero() {
               asChild
             >
               <a
-                href="https://wa.me/5500000000000"
+                href="https://wa.me/555197274193?text=Olá, vim pelo seu novo site!"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-2"
