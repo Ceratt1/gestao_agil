@@ -13,23 +13,26 @@ export default function Footer() {
           <div className="grid grid-cols-1 gap-8 md:grid-cols-2 items-center">
             <div>
               <h3 className="text-2xl font-light mb-2">
-                Receba nossas <span className="font-semibold">novidades</span>
+                Receba nosso <span className="font-semibold">contato direto</span>
               </h3>
               <p className="text-gray-400">
-                Cadastre-se para receber ofertas exclusivas e lançamentos em primeira mão.
+                Deixe seu número de WhatsApp e receba novidades e ofertas diretamente no seu celular.
               </p>
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4">
               <input
-                type="email"
-                placeholder="Seu melhor e-mail"
+                type="tel"
+                placeholder="(99) 99999-9999"
                 className="flex-1 rounded-full bg-gray-900 px-6 py-3 text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-white/20"
               />
-              <Button className="rounded-full bg-white text-black hover:bg-gray-200">Inscrever-se</Button>
+              <Button className="rounded-full bg-white text-black hover:bg-gray-200">
+                Enviar WhatsApp
+              </Button>
             </div>
           </div>
         </div>
+
 
         {/* Main Footer Content */}
         <div className="py-16 grid grid-cols-1 gap-12 md:grid-cols-4">

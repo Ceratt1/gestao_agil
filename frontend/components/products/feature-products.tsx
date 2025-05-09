@@ -1,58 +1,49 @@
+/* eslint-disable @next/next/no-img-element */
 "use client"
 
 import { useState } from "react"
-import Image from "next/image"
 import { ExternalLink, ShoppingBag, ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { Produtos } from "@/@types/Produtos"
+import { UUIDTypes, v4 as uuidv4 } from "uuid"
 
-// Product type definition
-type Product = {
-  id: number
-  name: string
-  price: number
-  image: string
-  whatsappLink: string
-  category: string
-}
-
-// Sample product data
-const products: Product[] = [
+const products: Produtos[] = [
   {
-    id: 1,
-    name: "Chronograph Classic",
-    price: 1299.99,
-    image: "/placeholder.svg?height=400&width=400",
-    whatsappLink: "https://wa.me/5500000000000?text=Olá,%20tenho%20interesse%20no%20Chronograph%20Classic",
-    category: "Luxo",
+    uuid: uuidv4(),
+    nome: "Chronograph Classic",
+    preco: 1299.99,
+    imagemCaminho: "/placeholder3.jpg",
+    whatsappLink: "https://wa.me/555197274193?text=Olá,%20tenho%20interesse%20no%20Chronograph%20Classic",
+    categoria: "Luxo",
   },
   {
-    id: 2,
-    name: "Silver Automatic",
-    price: 2499.99,
-    image: "/placeholder.svg?height=400&width=400",
-    whatsappLink: "https://wa.me/5500000000000?text=Olá,%20tenho%20interesse%20no%20Silver%20Automatic",
-    category: "Premium",
+    uuid: uuidv4(),
+    nome: "Chronograph Modern",
+    preco: 1499.99,
+    imagemCaminho: "/placeholder4.jpg",
+    whatsappLink: "https://wa.me/555197274193?text=Olá,%20tenho%20interesse%20no%20Chronograph%20Modern",
+    categoria: "Luxo",
   },
   {
-    id: 3,
-    name: "SmartTime Elite",
-    price: 1899.99,
-    image: "/placeholder.svg?height=400&width=400",
-    whatsappLink: "https://wa.me/5500000000000?text=Olá,%20tenho%20interesse%20no%20SmartTime%20Elite",
-    category: "Smart",
+    uuid: uuidv4(),
+    nome: "Chronograph Elite",
+    preco: 1999.99,
+    imagemCaminho: "/placeholder3.jpg",
+    whatsappLink: "https://wa.me/555197274193?text=Olá,%20tenho%20interesse%20no%20Chronograph%20Elite",
+    categoria: "Premium",
   },
   {
-    id: 4,
-    name: "Golden Elegance",
-    price: 1599.99,
-    image: "/placeholder.svg?height=400&width=400",
-    whatsappLink: "https://wa.me/5500000000000?text=Olá,%20tenho%20interesse%20no%20Golden%20Elegance",
-    category: "Feminino",
+    uuid: uuidv4(),
+    nome: "Chronograph Limited",
+    preco: 2499.99,
+    imagemCaminho: "/placeholder4.jpg",
+    whatsappLink: "https://wa.me/555197274193?text=Olá,%20tenho%20interesse%20no%20Chronograph%20Limited",
+    categoria: "Luxo",
   },
 ]
 
 export default function FeaturedProducts() {
-  const [hoveredId, setHoveredId] = useState<number | null>(null)
+  const [hoveredId, setHoveredId] = useState<UUIDTypes | null>(null)
 
   return (
     <section id="produtos" className="py-24 bg-white">
@@ -70,25 +61,24 @@ export default function FeaturedProducts() {
         <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4">
           {products.map((product) => (
             <div
-              key={product.id}
+              key={product.uuid.toString()}
               className={`group relative overflow-hidden rounded-xl bg-white transition-all duration-500 ${
-                hoveredId === product.id ? "shadow-2xl" : "shadow-md"
+                hoveredId === product.uuid ? "shadow-2xl" : "shadow-md"
               }`}
-              onMouseEnter={() => setHoveredId(product.id)}
+              onMouseEnter={() => setHoveredId(product.uuid)}
               onMouseLeave={() => setHoveredId(null)}
             >
               <div className="relative aspect-square overflow-hidden">
                 <div className="absolute top-4 left-4 z-10">
                   <span className="inline-block rounded-full bg-black px-3 py-1 text-xs font-medium text-white">
-                    {product.category}
+                    {product.categoria}
                   </span>
                 </div>
 
-                <Image
-                  src={product.image || "/placeholder.svg"}
-                  alt={product.name}
-                  fill
-                  className="object-cover transition-transform duration-700 group-hover:scale-110"
+                <img
+                  src={product.imagemCaminho || "/placeholder.svg"}
+                  alt={product.nome}
+                  className="object-cover transition-transform duration-700 group-hover:scale-110 mx-auto"
                 />
 
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
@@ -107,14 +97,14 @@ export default function FeaturedProducts() {
               </div>
 
               <div className="p-6">
-                <h3 className="mb-2 text-lg font-medium text-black">{product.name}</h3>
+                <h3 className="mb-2 text-lg font-medium text-black">{product.nome}</h3>
 
                 <div className="flex items-center justify-between">
                   <p className="text-xl font-bold text-black">
                     {new Intl.NumberFormat("pt-BR", {
                       style: "currency",
                       currency: "BRL",
-                    }).format(product.price)}
+                    }).format(product.preco)}
                   </p>
 
                   <a
@@ -122,7 +112,7 @@ export default function FeaturedProducts() {
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center justify-center rounded-full bg-gray-100 p-2 text-black transition-colors hover:bg-gray-200"
-                    aria-label={`Mais informações sobre ${product.name}`}
+                    aria-label={`Mais informações sobre ${product.nome}`}
                   >
                     <ExternalLink size={16} />
                   </a>
