@@ -26,6 +26,8 @@ def registro_view(request):
             return JsonResponse({'error': 'Preencha todos os campos.'}, status=400)
         if User.objects.filter(username=username).exists():
             return JsonResponse({'error': 'Usuário já existe.'}, status=400)
+        if User.objects.filter(email=email).exists():
+            return JsonResponse({'error': 'Email já cadastrado.'}, status=400)
         User.objects.create_user(username=username, email=email, password=password)
         return JsonResponse({'success': 'Usuário registrado com sucesso!'})
     return JsonResponse({'error': 'Método não permitido.'}, status=405)
@@ -67,7 +69,7 @@ def logout_view(request):
 class ProdutoViewSet(ModelViewSet):
     queryset = Produto.objects.all().order_by('-id')  # Produtos mais recentes primeiro
     serializer_class = ProdutoSerializer
-
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]  # Só autenticados podem criar/editar/deletar
 
 # -----------------------------------------------
 # Endpoint para buscar produtos por nome ou descrição
@@ -92,5 +94,16 @@ def search_products(request):
         for p in products
     ]
     return JsonResponse({'produtos': data})
+    
 
-
+# -----------------------------------------------
+# Endpoint para buscar produtos por ID
+# -----------------------------------------------
+@api_view(['GET'])
+def get_produto(request, id):
+    try:
+        produto = Produto.objects.get(id=id)
+        serializer = ProdutoSerializer(produto)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    except Produto.DoesNotExist:
+        return Response({'error': 'Produto não encontrado'}, status=404)

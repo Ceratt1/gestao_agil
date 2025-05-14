@@ -3,7 +3,8 @@ import os
 from dotenv import load_dotenv
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-$3ijk7bd62w3tzw0ruz)i6n4jvkxg9^r@5il_rvyi1!en*l*0)'
+load_dotenv()
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 
 DEBUG = True
@@ -11,7 +12,10 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 
-
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10,
+}
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -21,6 +25,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'loja',
+    'rest_framework.authtoken',
 ]
 
 MIDDLEWARE = [
@@ -96,9 +101,13 @@ USE_I18N = True
 
 USE_TZ = True
 
-
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = 'static/'
 
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'loja.Usuario'
+
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
