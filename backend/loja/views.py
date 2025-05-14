@@ -6,11 +6,15 @@ from .models import Produto
 from .serializers import ProdutoSerializer
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework import status, permissions
 from django.db.models import Q
 import json
 
 
+# -----------------------------------------------
 # View para registrar um novo usuário via API (para frontend React/Next.js)
+# -----------------------------------------------
 @csrf_exempt
 def registro_view(request):
     if request.method == 'POST':
@@ -28,7 +32,9 @@ def registro_view(request):
 
 
 
+# -----------------------------------------------
 # View para login de usuário via API (para frontend React/Next.js)
+# -----------------------------------------------
 @csrf_exempt
 def login_view(request):
     if request.method == 'POST':
@@ -44,8 +50,9 @@ def login_view(request):
     return JsonResponse({'error': 'Método não permitido.'}, status=405)
 
 
-
+# -----------------------------------------------
 # View para logout de usuário via API
+# -----------------------------------------------
 @csrf_exempt
 def logout_view(request):
     if request.method == 'POST':
@@ -54,16 +61,18 @@ def logout_view(request):
     return JsonResponse({'error': 'Método não permitido.'}, status=405)
 
 
-
+# -----------------------------------------------
 # API REST para produtos usando Django REST Framework
+# -----------------------------------------------
 class ProdutoViewSet(ModelViewSet):
     queryset = Produto.objects.all().order_by('-id')  # Produtos mais recentes primeiro
     serializer_class = ProdutoSerializer
 
 
-
+# -----------------------------------------------
 # Endpoint para buscar produtos por nome ou descrição
 # Exemplo de uso no frontend: /api/search_products/?search=nome
+# -----------------------------------------------
 def search_products(request):
     query = request.GET.get('search', '')
     if query:
@@ -83,3 +92,5 @@ def search_products(request):
         for p in products
     ]
     return JsonResponse({'produtos': data})
+
+
