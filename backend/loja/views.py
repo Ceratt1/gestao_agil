@@ -1,22 +1,22 @@
 from django.http import JsonResponse
 from django.contrib.auth import authenticate, login, logout
 from django.views.decorators.csrf import csrf_exempt
-from django.contrib.auth.models import User
 from .models import Produto
 from .serializers import ProdutoSerializer
 from rest_framework.viewsets import ModelViewSet, ViewSet
 from rest_framework.response import Response
-from rest_framework.decorators import api_view, permission_classes, action
+from rest_framework.decorators import api_view, action
 from rest_framework import status, permissions
 from django.db.models import Q
 import json
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 # -----------------------------------------------
 # View para registrar um novo usuário via API (para frontend React/Next.js)
 # -----------------------------------------------
-User = get_user_model()
 @csrf_exempt
 def registro_view(request):
     if request.method == 'POST':
@@ -150,3 +150,45 @@ class UsuarioViewSet(ViewSet):
         user = request.user
         user.delete()
         return Response({'success': 'Conta deletada com sucesso!'})
+
+    # --- ADMIN ONLY ENDPOINTS ---
+    @action(detail=False, methods=['get'], permission_classes=[IsAdminUser])
+    def listar_todos(self, request):
+        users = User.objects.all()
+        data = [
+            {
+                'id': u.id,
+                'username': u.username,
+                'email': u.email,
+                'first_name': u.first_name,
+                'last_name': u.last_name,
+                'regra': getattr(u, 'regra', None),
+                'contato_whatsapp': getattr(u, 'contato_whatsapp', None),
+            }
+            for u in users
+        ]
+        return Response({'usuarios': data})
+
+    @action(detail=True, methods=['delete'], permission_classes=[IsAdminUser])
+    def deletar_usuario(self, request, pk=None):
+        try:
+            user = User.objects.get(pk=pk)
+            user.delete()
+            return Response({'success': 'Usuário deletado com sucesso!'})
+        except User.DoesNotExist:
+            return Response({'error': 'Usuário não encontrado.'}, status=404)
+
+    @action(detail=True, methods=['put'], permission_classes=[IsAdminUser])
+    def atualizar_usuario(self, request, pk=None):
+        try:
+            user = User.objects.get(pk=pk)
+            data = request.data
+            user.email = data.get('email', user.email)
+            user.first_name = data.get('first_name', user.first_name)
+            user.last_name = data.get('last_name', user.last_name)
+            user.regra = data.get('regra', getattr(user, 'regra', None))
+            user.contato_whatsapp = data.get('contato_whatsapp', getattr(user, 'contato_whatsapp', None))
+            user.save()
+            return Response({'success': 'Usuário atualizado com sucesso!'})
+        except User.DoesNotExist:
+            return Response({'error': 'Usuário não encontrado.'}, status=404)
