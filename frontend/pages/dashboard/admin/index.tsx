@@ -1,6 +1,6 @@
 import AdminHeader from "@/components/admin/AdminHeader"
-import AdminFooter from "@/components/admin/AdminFooter"
 import AdminContent from "@/components/admin/AdminContent"
+import Footer from "@/components/footer/footer"
 
 export default function Admin() {
     return (
@@ -9,7 +9,7 @@ export default function Admin() {
                 
               <AdminContent />
         
-              <AdminFooter />
+              <Footer />
         </div>
     )
 }
