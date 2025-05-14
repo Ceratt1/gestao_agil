@@ -1,0 +1,77 @@
+# Byte-compiled / optimized / DLL files
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+*.so
+
+# Django stuff:
+*.log
+*.pot
+*.pyc
+*.sqlite3
+db.sqlite3
+
+# If you are using PostgreSQL or MySQL, ignore the database credentials:
+.env
+
+# Local development files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+
+# Environments
+venv/
+env/
+ENV/
+
+# Static and media files
+/staticfiles/
+/media/
+
+# macOS-specific files
+.DS_Store
+
+# Coverage reports
+htmlcov/
+*.cover
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.coveragerc
+
+# Pytest
+.pytest_cache/
+
+# Test and debug files
+.tox/
+*.egg
+*.egg-info/
+.installed.cfg
+*.eggs
+
+# Celery beat schedule
+celerybeat-schedule
+
+# pipenv
+Pipfile
+Pipfile.lock
+
+# Pyenv
+.python-version
+
+# Logs and debug files
+*.log
+*.out
+*.err
+
+# Build related
+build/
+dist/
+*.egg-info/
+.installed.cfg
+*.whl
