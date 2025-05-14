@@ -11,10 +11,12 @@ from rest_framework import status, permissions
 from django.db.models import Q
 import json
 from rest_framework.permissions import IsAuthenticated
+from django.contrib.auth import get_user_model
 
 # -----------------------------------------------
 # View para registrar um novo usuário via API (para frontend React/Next.js)
 # -----------------------------------------------
+User = get_user_model()
 @csrf_exempt
 def registro_view(request):
     if request.method == 'POST':
