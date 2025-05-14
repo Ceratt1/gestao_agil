@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-
+import uuid
 class Produto(models.Model):
     titulo = models.CharField(max_length=255)
     descricao = models.TextField()
@@ -12,6 +12,7 @@ class Produto(models.Model):
         return self.titulo
 
 class Usuario(AbstractUser):
+    uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     class Regra(models.TextChoices):
         ADMIN = 'ADMIN', 'Admin'
         REGULAR = 'REGULAR', 'Regular'
