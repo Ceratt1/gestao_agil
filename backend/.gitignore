@@ -75,3 +75,6 @@ dist/
 *.egg-info/
 .installed.cfg
 *.whl
+
+*/migrations/__pycache__/
+*/migrations/*.pyc
