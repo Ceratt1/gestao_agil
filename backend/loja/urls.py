@@ -1,7 +1,7 @@
 from django.urls import path, include
 from . import views
 from rest_framework.routers import DefaultRouter
-from .views import ProdutoViewSet, UsuarioViewSet
+from .views import ProdutoViewSet, UsuarioViewSet, link_pagamento_whatsapp
 
 router = DefaultRouter()
 router.register(r'produtos', ProdutoViewSet, basename='produto')
@@ -13,4 +13,6 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout'),
     path('api/', include(router.urls)),  
     path('search_products/', views.search_products, name='search_products'),
+    path('link_pagamento_whatsapp/<int:produto_id>/', link_pagamento_whatsapp, name='link_pagamento_whatsapp'),
+
 ]

@@ -11,9 +11,11 @@ from django.db.models import Q
 import json
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from django.contrib.auth import get_user_model
+from urllib.parse import quote
+
+
 
 User = get_user_model()
-
 # -----------------------------------------------
 # View para registrar um novo usuário via API (para frontend React/Next.js)
 # -----------------------------------------------
@@ -192,3 +194,22 @@ class UsuarioViewSet(ViewSet):
             return Response({'success': 'Usuário atualizado com sucesso!'})
         except User.DoesNotExist:
             return Response({'error': 'Usuário não encontrado.'}, status=404)
+        
+
+
+# -----------------------------------------------
+# Endpoint para gerar link de pagamento via WhatsApp
+# Exemplo de uso no frontend: /link_pagamento_whatsapp/<produto_id>/
+# -----------------------------------------------
+@api_view(['GET'])
+def link_pagamento_whatsapp(request, produto_id):
+    try:
+        produto = Produto.objects.get(id=produto_id)
+        admin = User.objects.filter(is_superuser=True).first()
+        if not admin or not admin.contato_whatsapp:
+            return Response({'error': 'Admin não possui WhatsApp cadastrado.'}, status=400)
+        mensagem = f"Olá! Tenho interesse no produto: {produto.titulo} - {produto.valor}"
+        link = f"https://wa.me/55{admin.contato_whatsapp}?text={quote(mensagem)}"
+        return Response({'link': link})
+    except Produto.DoesNotExist:
+        return Response({'error': 'Produto não encontrado.'}, status=404)
