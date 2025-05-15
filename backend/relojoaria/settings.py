@@ -26,9 +26,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'loja',
     'rest_framework.authtoken',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -111,3 +113,4 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'loja.Usuario'
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+CORS_ALLOW_ALL_ORIGINS = True  # Ou especifique domínios com CORS_ALLOWED_ORIGINS

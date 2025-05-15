@@ -12,10 +12,9 @@ import json
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from django.contrib.auth import get_user_model
 from urllib.parse import quote
-
-
-
 User = get_user_model()
+
+
 # -----------------------------------------------
 # View para registrar um novo usuário via API (para frontend React/Next.js)
 # -----------------------------------------------
@@ -77,12 +76,18 @@ class ProdutoViewSet(ModelViewSet):
 # -----------------------------------------------
 def search_products(request):
     query = request.GET.get('search', '')
+    preco_min = request.GET.get('preco_min')
+    preco_max = request.GET.get('preco_max')
+
+    filters = Q()
     if query:
-        products = Produto.objects.filter(
-            Q(titulo__icontains=query) | Q(descricao__icontains=query)
-        )
-    else:
-        products = Produto.objects.none()
+        filters &= Q(titulo__icontains=query) | Q(descricao__icontains=query)
+    if preco_min:
+        filters &= Q(valor__gte=preco_min)
+    if preco_max:
+        filters &= Q(valor__lte=preco_max)
+
+    products = Produto.objects.filter(filters)
     data = [
         {
             'id': p.id,
@@ -209,7 +214,7 @@ def link_pagamento_whatsapp(request, produto_id):
         if not admin or not admin.contato_whatsapp:
             return Response({'error': 'Admin não possui WhatsApp cadastrado.'}, status=400)
         mensagem = f"Olá! Tenho interesse no produto: {produto.titulo} - {produto.valor}"
-        link = f"https://wa.me/55%7B{admin.contato_whatsapp}%7D?text={quote(mensagem)}"
+        link = f"https://wa.me/55{admin.contato_whatsapp}?text={quote(mensagem)}"
         return Response({'link': link})
     except Produto.DoesNotExist:
         return Response({'error': 'Produto não encontrado.'}, status=404)
