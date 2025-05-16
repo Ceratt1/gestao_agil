@@ -12,7 +12,7 @@ export default function AboutUs() {
 
           <div>
             <h2 className="mb-6 text-3xl font-light tracking-tight text-black md:text-4xl">
-              Sobre a <span className="font-semibold">ATRmundial</span>
+              Sobre a <span className="font-semibold text-orange-400">ATRmundial</span>
             </h2>
 
             <p className="mb-8 text-lg text-gray-700">

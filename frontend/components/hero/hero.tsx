@@ -37,7 +37,7 @@ export default function Hero() {
           </div>
 
           <h1 className="mb-6 text-center md:text-left text-4xl font-light tracking-tight md:text-6xl lg:text-7xl">
-            O tempo é <span className="font-semibold">precioso</span>.<br />
+            O tempo é <span className="font-semibold text-orange-400">precioso</span>.<br />
             Seu relógio também deve ser.
           </h1>
 
