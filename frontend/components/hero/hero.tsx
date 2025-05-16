@@ -56,7 +56,7 @@ export default function Hero() {
 
             <Button
               variant="outline"
-              className="border-white text-black hover:bg-white/10 rounded-full px-8"
+              className="border-white text-white hover:bg-white/10 rounded-full px-8"
               size="lg"
               asChild
             >

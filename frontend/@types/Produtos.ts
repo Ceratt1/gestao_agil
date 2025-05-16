@@ -1,4 +1,5 @@
 import { UUIDTypes } from "uuid";
+import { Categoria } from "./Categoria.enum";
 
 export type Produtos =  {
     uuid: UUIDTypes;
@@ -6,5 +7,5 @@ export type Produtos =  {
     imagemCaminho: string;
     whatsappLink: string;
     preco: number;
-    categoria: string;
+    categoria: Categoria;
 }

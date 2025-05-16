@@ -3,135 +3,143 @@
 import { useState, useEffect } from "react"
 import { Slider } from "@/components/ui/slider"
 import { Button } from "@/components/ui/button"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Filter, Search, X, ShoppingBag, ExternalLink, ArrowRight } from "lucide-react"
-
-// Definição do tipo UUID
-type UUIDTypes = string
-
-// Definição do tipo Produtos conforme fornecido
-export type Produtos = {
-  uuid: UUIDTypes
-  nome: string
-  imagemCaminho: string
-  whatsappLink: string
-  preco: number
-  categoria: string
-}
-
-// Dados de exemplo para o catálogo
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import {
+  Filter,
+  Search,
+  X,
+} from "lucide-react"
+import { Produtos } from "@/@types/Produtos"
+import { UUIDTypes } from "uuid"
+import { Categoria } from "@/@types/Categoria.enum"
+import { v4 as uuidv4 } from "uuid"
 const produtosExemplo: Produtos[] = [
   {
-    uuid: "1",
+    uuid: uuidv4() as UUIDTypes,
     nome: "Elegance Classic",
-    imagemCaminho: "/placeholder.svg?height=300&width=300",
+    imagemCaminho: "/placeholder4.jpg",
     whatsappLink: "https://wa.me/555197274193?text=Tenho%20interesse%20no%20Elegance%20Classic",
     preco: 1299.9,
-    categoria: "Luxo",
+    categoria: Categoria.MECANICO_BATERIA,
   },
   {
-    uuid: "2",
+    uuid: uuidv4() as UUIDTypes,
     nome: "Sport Pro",
-    imagemCaminho: "/placeholder.svg?height=300&width=300",
+    imagemCaminho: "/placeholder4.jpg",
     whatsappLink: "https://wa.me/555197274193?text=Tenho%20interesse%20no%20Sport%20Pro",
-    preco: 899.9,
-    categoria: "Esportivo",
+    preco: 1599.9,
+    categoria: Categoria.SOLAR,
   },
   {
-    uuid: "3",
-    nome: "Minimalist",
-    imagemCaminho: "/placeholder.svg?height=300&width=300",
-    whatsappLink: "https://wa.me/555197274193?text=Tenho%20interesse%20no%20Minimalist",
-    preco: 599.9,
-    categoria: "Casual",
-  },
-  {
-    uuid: "4",
-    nome: "Diamond Elite",
-    imagemCaminho: "/placeholder.svg?height=300&width=300",
-    whatsappLink: "https://wa.me/555197274193?text=Tenho%20interesse%20no%20Diamond%20Elite",
-    preco: 2499.9,
-    categoria: "Luxo",
-  },
-  {
-    uuid: "5",
+    uuid: uuidv4() as UUIDTypes,
     nome: "Urban Style",
-    imagemCaminho: "/placeholder.svg?height=300&width=300",
+    imagemCaminho: "/placeholder4.jpg",
     whatsappLink: "https://wa.me/555197274193?text=Tenho%20interesse%20no%20Urban%20Style",
-    preco: 799.9,
-    categoria: "Casual",
+    preco: 899.9,
+    categoria: Categoria.BOLSO,
   },
   {
-    uuid: "6",
-    nome: "Chronograph Master",
-    imagemCaminho: "/placeholder.svg?height=300&width=300",
-    whatsappLink: "https://wa.me/555197274193?text=Tenho%20interesse%20no%20Chronograph%20Master",
-    preco: 1899.9,
-    categoria: "Esportivo",
+    uuid: uuidv4() as UUIDTypes,
+    nome: "Luxury Gold",
+    imagemCaminho: "/placeholder4.jpg",
+    whatsappLink: "https://wa.me/555197274193?text=Tenho%20interesse%20no%20Luxury%20Gold",
+    preco: 2999.9,
+    categoria: Categoria.CORDA,
   },
   {
-    uuid: "7",
-    nome: "Vintage Collection",
-    imagemCaminho: "/placeholder.svg?height=300&width=300",
-    whatsappLink: "https://wa.me/555197274193?text=Tenho%20interesse%20no%20Vintage%20Collection",
+    uuid: uuidv4() as UUIDTypes,
+    nome: "Adventure X",
+    imagemCaminho: "/placeholder4.jpg",
+    whatsappLink: "https://wa.me/555197274193?text=Tenho%20interesse%20no%20Adventure%20X",
+    preco: 1799.9,
+    categoria: Categoria.QUARTZO,
+  },
+  {
+    uuid: uuidv4() as UUIDTypes,
+    nome: "Minimal Black",
+    imagemCaminho: "/placeholder4.jpg",
+    whatsappLink: "https://wa.me/555197274193?text=Tenho%20interesse%20no%20Minimal%20Black",
     preco: 1099.9,
-    categoria: "Vintage",
+    categoria: Categoria.MECANICO_BATERIA,
   },
   {
-    uuid: "8",
-    nome: "Smart Watch Pro",
-    imagemCaminho: "/placeholder.svg?height=300&width=300",
-    whatsappLink: "https://wa.me/555197274193?text=Tenho%20interesse%20no%20Smart%20Watch%20Pro",
+    uuid: uuidv4() as UUIDTypes,
+    nome: "Classic Silver",
+    imagemCaminho: "/placeholder4.jpg",
+    whatsappLink: "https://wa.me/555197274193?text=Tenho%20interesse%20no%20Classic%20Silver",
+    preco: 1399.9,
+    categoria: Categoria.MECANICO_BATERIA,
+  },
+  {
+    uuid: uuidv4() as UUIDTypes,
+    nome: "Ocean Blue",
+    imagemCaminho: "/placeholder4.jpg",
+    whatsappLink: "https://wa.me/555197274193?text=Tenho%20interesse%20no%20Ocean%20Blue",
+    preco: 1899.9,
+    categoria: Categoria.BOLSO,
+  },
+  {
+    uuid: uuidv4() as UUIDTypes,
+    nome: "Retro Chic",
+    imagemCaminho: "/placeholder4.jpg",
+    whatsappLink: "https://wa.me/555197274193?text=Tenho%20interesse%20no%20Retro%20Chic",
+    preco: 999.9,
+    categoria: Categoria.BOLSO,
+  },
+  {
+    uuid: uuidv4() as UUIDTypes,
+    nome: "Modern Steel",
+    imagemCaminho: "/placeholder4.jpg",
+    whatsappLink: "https://wa.me/555197274193?text=Tenho%20interesse%20no%20Modern%20Steel",
     preco: 1499.9,
-    categoria: "Smart",
+    categoria: Categoria.MECANICO_BATERIA,
   },
   {
-    uuid: "9",
-    nome: "Diver 200m",
-    imagemCaminho: "/placeholder.svg?height=300&width=300",
-    whatsappLink: "https://wa.me/555197274193?text=Tenho%20interesse%20no%20Diver%20200m",
-    preco: 1699.9,
-    categoria: "Esportivo",
+    uuid: uuidv4() as UUIDTypes,
+    nome: "Explorer",
+    imagemCaminho: "/placeholder4.jpg",
+    whatsappLink: "https://wa.me/555197274193?text=Tenho%20interesse%20no%20Explorer",
+    preco: 2099.9,
+    categoria: Categoria.CORDA,
   },
   {
-    uuid: "10",
-    nome: "Executive Gold",
-    imagemCaminho: "/placeholder.svg?height=300&width=300",
-    whatsappLink: "https://wa.me/555197274193?text=Tenho%20interesse%20no%20Executive%20Gold",
-    preco: 3299.9,
-    categoria: "Luxo",
+    uuid: uuidv4() as UUIDTypes,
+    nome: "Vintage Leather",
+    imagemCaminho: "/placeholder4.jpg",
+    whatsappLink: "https://wa.me/555197274193?text=Tenho%20interesse%20no%20Vintage%20Leather",
+    preco: 1199.9,
+    categoria: Categoria.QUARTZO,
   },
 ]
 
 export default function CatalogoHome() {
   const [produtos, setProdutos] = useState<Produtos[]>(produtosExemplo)
   const [filteredProdutos, setFilteredProdutos] = useState<Produtos[]>(produtosExemplo)
-  const [categoriaFiltro, setCategoriaFiltro] = useState<string>("Todas")
+  const [categoriaFiltro, setCategoriaFiltro] = useState<Categoria>(Categoria.TODAS)
   const [precoRange, setPrecoRange] = useState<[number, number]>([0, 4000])
   const [showFilters, setShowFilters] = useState(false)
   const [searchTerm, setSearchTerm] = useState("")
   const [hoveredId, setHoveredId] = useState<UUIDTypes | null>(null)
 
-  // Obter todas as categorias únicas
   const categorias = ["Todas", ...Array.from(new Set(produtos.map((p) => p.categoria)))]
-
-  // Preço mínimo e máximo para o slider
   const minPreco = Math.min(...produtos.map((p) => p.preco))
   const maxPreco = Math.max(...produtos.map((p) => p.preco))
 
-  // Aplicar filtros quando os estados mudarem
   useEffect(() => {
     let result = [...produtos]
 
-    // Filtrar por categoria
     if (categoriaFiltro !== "Todas") {
       result = result.filter((p) => p.categoria === categoriaFiltro)
     }
 
-    // Filtrar por preço
     result = result.filter((p) => p.preco >= precoRange[0] && p.preco <= precoRange[1])
 
-    // Filtrar por termo de busca
     if (searchTerm) {
       result = result.filter(
         (p) =>
@@ -143,7 +151,6 @@ export default function CatalogoHome() {
     setFilteredProdutos(result)
   }, [categoriaFiltro, precoRange, searchTerm, produtos])
 
-  // Formatar preço para exibição
   const formatarPreco = (preco: number) => {
     return preco.toLocaleString("pt-BR", {
       style: "currency",
@@ -153,12 +160,10 @@ export default function CatalogoHome() {
 
   return (
     <main className="min-h-screen bg-white">
-      {/* Header */}
       <header className="bg-black text-white py-6">
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row justify-between items-center">
-            <h1 className="text-3xl md:text-4xl font-bold tracking-tighter mb-4 md:mb-0">CHRONO ELEGANCE</h1>
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-4 ml-auto">
               <div className="relative">
                 <input
                   type="text"
@@ -182,13 +187,12 @@ export default function CatalogoHome() {
         </div>
       </header>
 
-      {/* Filtros */}
       <div className={`bg-gray-100 py-4 transition-all duration-300 ${showFilters ? "block" : "hidden"}`}>
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div className="w-full md:w-auto">
               <label className="block text-sm font-medium text-gray-700 mb-1">Categoria</label>
-              <Select value={categoriaFiltro} onValueChange={(value) => setCategoriaFiltro(value)}>
+              <Select value={categoriaFiltro} onValueChange={(value) => setCategoriaFiltro(value as Categoria)}>
                 <SelectTrigger className="w-full md:w-[200px]">
                   <SelectValue placeholder="Selecione a categoria" />
                 </SelectTrigger>
@@ -225,7 +229,7 @@ export default function CatalogoHome() {
               size="sm"
               className="mt-2 md:mt-0"
               onClick={() => {
-                setCategoriaFiltro("Todas")
+                setCategoriaFiltro(Categoria.TODAS)
                 setPrecoRange([minPreco, maxPreco])
                 setSearchTerm("")
               }}
@@ -237,7 +241,6 @@ export default function CatalogoHome() {
         </div>
       </div>
 
-      {/* Resultados */}
       <section className="py-12 container mx-auto px-4">
         <div className="mb-8 flex justify-between items-center">
           <h2 className="text-2xl font-bold tracking-tight text-black">
@@ -252,7 +255,7 @@ export default function CatalogoHome() {
             <Button
               variant="link"
               onClick={() => {
-                setCategoriaFiltro("Todas")
+                setCategoriaFiltro(Categoria.TODAS)
                 setPrecoRange([minPreco, maxPreco])
                 setSearchTerm("")
               }}
@@ -277,67 +280,32 @@ export default function CatalogoHome() {
                       {produto.categoria}
                     </span>
                   </div>
-
-                  {/* sim genio, eu conheço o image do next, mas estou com bugs... */}
                   <img
                     src={produto.imagemCaminho || "/placeholder.svg"}
                     alt={produto.nome}
                     className="object-cover transition-transform duration-700 group-hover:scale-110 mx-auto"
                   />
-
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-
                   <div className="absolute bottom-0 left-0 right-0 p-6 translate-y-full group-hover:translate-y-0 transition-transform duration-500">
                     <a
                       href={produto.whatsappLink}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex w-full items-center justify-center gap-2 rounded-full bg-white py-3 text-sm font-medium text-black transition-colors hover:bg-gray-100"
+                      className="flex items-center justify-between text-white bg-black px-4 py-2 rounded-md hover:bg-white hover:text-black"
                     >
-                      <ShoppingBag size={16} />
-                      Comprar agora
+                      Conversar no WhatsApp
                     </a>
                   </div>
                 </div>
-
-                <div className="p-6">
-                  <h3 className="mb-2 text-lg font-medium text-black">{produto.nome}</h3>
-
-                  <div className="flex items-center justify-between">
-                    <p className="text-xl font-bold text-black">{formatarPreco(produto.preco)}</p>
-
-                    <a
-                      href={produto.whatsappLink}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center justify-center rounded-full bg-gray-100 p-2 text-black transition-colors hover:bg-gray-200"
-                      aria-label={`Mais informações sobre ${produto.nome}`}
-                    >
-                      <ExternalLink size={16} />
-                    </a>
-                  </div>
+                <div className="p-4 text-center">
+                  <h3 className="text-lg font-semibold text-black">{produto.nome}</h3>
+                  <p className="text-sm text-gray-600 mt-1">{formatarPreco(produto.preco)}</p>
                 </div>
               </div>
             ))}
           </div>
         )}
-
-        <div className="mt-16 text-center">
-          <Button asChild className="rounded-full bg-black text-white hover:bg-gray-800 px-8" size="lg">
-            <a
-              href="https://wa.me/555197274193?text=Olá,%20gostaria%20de%20ver%20mais%20produtos"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-2"
-            >
-              Ver Catálogo Completo
-              <ArrowRight size={16} />
-            </a>
-          </Button>
-        </div>
       </section>
-
-    
     </main>
   )
 }
