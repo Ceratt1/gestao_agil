@@ -48,7 +48,7 @@ export default function FeaturedProducts() {
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
           <h2 className="text-3xl font-light tracking-tight text-black md:text-5xl mb-4">
-            Nossa <span className="font-semibold">Coleção</span>
+            Produtos <span className="font-semibold text-orange-400">ATRmundial</span>
           </h2>
           <p className="text-gray-600 max-w-2xl mx-auto">
             Cada relógio é cuidadosamente selecionado para oferecer o melhor em design e funcionalidade. Descubra peças
