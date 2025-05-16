@@ -34,18 +34,6 @@ export default function SidebarMenu({isOpen, toggleOpen}: SidebarOpenParameters)
             </ul>
           </details>
         </li>
-        <li>
-          <Link href="#" className="flex items-center p-2 space-x-2 hover:bg-gray-700 rounded">
-            <Copy className="w-5 h-5" />
-            <span>Copy</span>
-          </Link>
-        </li>
-        <li>
-          <Link href="#" className="flex items-center p-2 space-x-2 hover:bg-gray-700 rounded">
-            <Book className="w-5 h-5" />
-            <span>Calendar</span>
-          </Link>
-        </li>
       </ul>
     </nav>
   );
