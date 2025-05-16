@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
-import { ArrowRight, Clock } from "lucide-react"
+import { ArrowRight, Clock, Star } from "lucide-react"
 
 export default function Hero() {
   const [currentTime, setCurrentTime] = useState(new Date())
@@ -27,7 +27,7 @@ export default function Hero() {
       <div className="absolute inset-0 z-0">
         <div className="absolute inset-0 bg-gradient-to-r from-black via-black/90 to-black/70"></div>
         <div className="absolute inset-0 bg-[url('/hero.jpg')] bg-cover bg-center opacity-100 mix-blend-overlay"></div>
-        </div>
+      </div>
 
       <div className="container relative z-10 mx-auto px-4 py-28 md:py-40">
         <div className="flex flex-col items-center md:items-start max-w-4xl">
@@ -71,6 +71,26 @@ export default function Hero() {
             </Button>
           </div>
         </div>
+      </div>
+
+      {/* Google Rating - Bottom Right */}
+      <div className="absolute bottom-8 right-8 z-10 flex flex-col items-end">
+        <div className="flex items-center gap-1 mb-1">
+          <div className="flex">
+            <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
+            <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
+            <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
+            <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
+            <div className="relative w-5 h-5">
+              <Star className="absolute h-5 w-5 text-yellow-400" />
+              <div className="absolute top-0 right-0 w-[30%] h-full bg-black overflow-hidden">
+                <Star className="absolute right-0 h-5 w-5 text-yellow-400" />
+              </div>
+            </div>
+          </div>
+          <span className="text-sm font-medium text-white">4.7</span>
+        </div>
+        <span className="text-xs text-gray-300">Avaliação no Google</span>
       </div>
 
       <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-black to-transparent"></div>

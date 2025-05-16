@@ -75,11 +75,6 @@ export default function Footer() {
                   Sobre Nós
                 </Link>
               </li>
-              <li>
-                <Link href="#contato" className="text-gray-400 hover:text-white transition-colors inline-block">
-                  Contato
-                </Link>
-              </li>
             </ul>
           </div>
 
@@ -102,11 +97,7 @@ export default function Footer() {
                   Política de Trocas
                 </Link>
               </li>
-              <li>
-                <Link href="#" className="text-gray-400 hover:text-white transition-colors inline-block">
-                  FAQ
-                </Link>
-              </li>
+
             </ul>
           </div>
 

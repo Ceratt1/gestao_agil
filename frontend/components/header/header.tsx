@@ -56,6 +56,12 @@ export default function Header() {
           >
             Contato
           </Link>
+          <Link
+            href="/#reparos"
+            className="text-sm font-medium text-black hover:text-gray-600 transition-colors relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-black after:transition-all hover:after:w-full"
+          >
+            reparos
+          </Link>
         </nav>
 
         <div className="hidden md:flex items-center space-x-4">
