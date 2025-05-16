@@ -18,7 +18,6 @@ User = get_user_model()
 
 
 
-
 # -----------------------------------------------
 # View para registrar um novo usuário via API (para frontend React/Next.js)
 # -----------------------------------------------
@@ -222,3 +221,22 @@ def link_pagamento_whatsapp(request, produto_id):
         return Response({'link': link})
     except Produto.DoesNotExist:
         return Response({'error': 'Produto não encontrado.'}, status=404)
+    
+
+# -----------------------------------------------
+# Endpoint para listar produtos (exibe todos os produtos)
+# ----------------------------------------------- 
+@api_view(['GET'])
+def listar_produtos(request):
+    produtos = Produto.objects.all().order_by('-id')  # Ordena por ID (mais recentes primeiro)
+    data = [
+        {
+            'id': produto.id,
+            'titulo': produto.titulo,
+            'descricao': produto.descricao,
+            'valor': str(produto.valor),
+            'caminho_imagem': produto.caminho_imagem,
+        }
+        for produto in produtos
+    ]
+    return Response({'produtos': data}, status=status.HTTP_200_OK)
