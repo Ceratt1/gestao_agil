@@ -14,6 +14,10 @@ from django.contrib.auth import get_user_model
 from urllib.parse import quote
 User = get_user_model()
 
+# !!!!!!!!!! VERSÃO DO PYTHON: Python 3.12.10 !!!!!!!!
+
+
+
 
 # -----------------------------------------------
 # View para registrar um novo usuário via API (para frontend React/Next.js)
