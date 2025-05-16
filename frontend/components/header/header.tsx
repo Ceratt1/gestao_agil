@@ -39,19 +39,19 @@ export default function Header() {
             Início
           </Link>
           <Link
-            href="#produtos"
+            href="/#produtos"
             className="text-sm font-medium text-black hover:text-gray-600 transition-colors relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-black after:transition-all hover:after:w-full"
           >
             Coleção
           </Link>
           <Link
-            href="#sobre"
+            href="/#sobre"
             className="text-sm font-medium text-black hover:text-gray-600 transition-colors relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-black after:transition-all hover:after:w-full"
           >
             Sobre Nós
           </Link>
           <Link
-            href="#contato"
+            href="/#contato"
             className="text-sm font-medium text-black hover:text-gray-600 transition-colors relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-black after:transition-all hover:after:w-full"
           >
             Contato

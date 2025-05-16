@@ -6,6 +6,7 @@ import { ExternalLink, ShoppingBag, ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Produtos } from "@/@types/Produtos"
 import { UUIDTypes, v4 as uuidv4 } from "uuid"
+import { Categoria } from "@/@types/Categoria.enum"
 
 const products: Produtos[] = [
   {
@@ -14,31 +15,28 @@ const products: Produtos[] = [
     preco: 1299.99,
     imagemCaminho: "/placeholder3.jpg",
     whatsappLink: "https://wa.me/555197274193?text=Olá,%20tenho%20interesse%20no%20Chronograph%20Classic",
-    categoria: "Luxo",
-  },
-  {
+    categoria: Categoria.PULSO,
+  },{
     uuid: uuidv4(),
-    nome: "Chronograph Modern",
-    preco: 1499.99,
-    imagemCaminho: "/placeholder4.jpg",
-    whatsappLink: "https://wa.me/555197274193?text=Olá,%20tenho%20interesse%20no%20Chronograph%20Modern",
-    categoria: "Luxo",
-  },
-  {
-    uuid: uuidv4(),
-    nome: "Chronograph Elite",
-    preco: 1999.99,
+    nome: "Chronograph Classic",
+    preco: 1299.99,
     imagemCaminho: "/placeholder3.jpg",
-    whatsappLink: "https://wa.me/555197274193?text=Olá,%20tenho%20interesse%20no%20Chronograph%20Elite",
-    categoria: "Premium",
-  },
-  {
+    whatsappLink: "https://wa.me/555197274193?text=Olá,%20tenho%20interesse%20no%20Chronograph%20Classic",
+    categoria: Categoria.PULSO,
+  },{
     uuid: uuidv4(),
-    nome: "Chronograph Limited",
-    preco: 2499.99,
-    imagemCaminho: "/placeholder4.jpg",
-    whatsappLink: "https://wa.me/555197274193?text=Olá,%20tenho%20interesse%20no%20Chronograph%20Limited",
-    categoria: "Luxo",
+    nome: "Chronograph Classic",
+    preco: 1299.99,
+    imagemCaminho: "/placeholder3.jpg",
+    whatsappLink: "https://wa.me/555197274193?text=Olá,%20tenho%20interesse%20no%20Chronograph%20Classic",
+    categoria: Categoria.PULSO,
+  },{
+    uuid: uuidv4(),
+    nome: "Chronograph Classic",
+    preco: 1299.99,
+    imagemCaminho: "/placeholder3.jpg",
+    whatsappLink: "https://wa.me/555197274193?text=Olá,%20tenho%20interesse%20no%20Chronograph%20Classic",
+    categoria: Categoria.PULSO,
   },
 ]
 

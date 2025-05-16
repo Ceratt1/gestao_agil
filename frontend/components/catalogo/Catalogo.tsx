@@ -160,7 +160,7 @@ export default function CatalogoHome() {
 
   return (
     <main className="min-h-screen bg-white">
-      <header className="bg-black text-white py-6">
+      <header className="bg-white text-white py-6">
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="flex items-center space-x-4 ml-auto">
@@ -168,7 +168,7 @@ export default function CatalogoHome() {
                 <input
                   type="text"
                   placeholder="Buscar relógios..."
-                  className="px-4 py-2 pr-10 rounded-md bg-gray-800 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-white"
+                  className="px-4 py-2 pr-10 rounded-md bg-gray-100 text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
@@ -187,16 +187,16 @@ export default function CatalogoHome() {
         </div>
       </header>
 
-      <div className={`bg-gray-100 py-4 transition-all duration-300 ${showFilters ? "block" : "hidden"}`}>
+      <div className={`bg-white py-4 transition-all duration-300 ${showFilters ? "block" : "hidden"}`}>
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div className="w-full md:w-auto">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Categoria</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Categorias</label>
               <Select value={categoriaFiltro} onValueChange={(value) => setCategoriaFiltro(value as Categoria)}>
                 <SelectTrigger className="w-full md:w-[200px]">
                   <SelectValue placeholder="Selecione a categoria" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="w-full bg-black text-white">
                   {categorias.map((categoria) => (
                     <SelectItem key={categoria} value={categoria}>
                       {categoria}
@@ -220,7 +220,7 @@ export default function CatalogoHome() {
                 step={100}
                 value={precoRange}
                 onValueChange={(value) => setPrecoRange(value as [number, number])}
-                className="w-full"
+                className="w-full bg-gray-400 rounded-md"
               />
             </div>
 
@@ -234,7 +234,7 @@ export default function CatalogoHome() {
                 setSearchTerm("")
               }}
             >
-              <X className="h-4 w-4 mr-2" />
+              <X className="h-4 w-4 mr-2" onClick={() => setPrecoRange([minPreco, maxPreco])} />
               Limpar Filtros
             </Button>
           </div>
