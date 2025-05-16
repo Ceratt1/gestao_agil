@@ -1,7 +1,14 @@
+"use client"
+
 import { ChevronLeft, Grid, CalendarDays, Copy, Book } from 'lucide-react';
 import Link from 'next/link';
 
-export default function SidebarMenu() {
+interface SidebarOpenParameters {
+  open: boolean
+  toggleOpen: () => void
+}
+
+export default function SidebarMenu({isOpen, toggleOpen}: SidebarOpenParameters) {
   return (
     <nav className="w-64 bg-black text-white h-screen">
       <div className="p-4 border-b border-gray-700">

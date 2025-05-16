@@ -2,11 +2,112 @@ import { Categoria } from "@/@types/Categoria.enum"
 import { Produtos } from "@/@types/Produtos"
 import { v4 as uuidv4 } from "uuid"
 import { UUIDTypes } from "uuid"
+import { Button } from "../ui/button"
+import { Pencil, Trash } from "lucide-react"
 
+
+// const produtosExemplo: Produtos[] = [
+//   {
+//     uuid: uuidv4() as UUIDTypes,
+//     nome: "Elegance Classic",
+//     imagemCaminho: "/placeholder4.jpg",
+//     whatsappLink: "https://wa.me/555197274193?text=Tenho%20interesse%20no%20Elegance%20Classic",
+//     preco: 1299.9,
+//     categoria: Categoria.MECANICO_BATERIA,
+//   },
+//   {
+//     uuid: uuidv4() as UUIDTypes,
+//     nome: "Sport Pro",
+//     imagemCaminho: "/placeholder4.jpg",
+//     whatsappLink: "https://wa.me/555197274193?text=Tenho%20interesse%20no%20Sport%20Pro",
+//     preco: 1599.9,
+//     categoria: Categoria.SOLAR,
+//   },
+//   {
+//     uuid: uuidv4() as UUIDTypes,
+//     nome: "Urban Style",
+//     imagemCaminho: "/placeholder4.jpg",
+//     whatsappLink: "https://wa.me/555197274193?text=Tenho%20interesse%20no%20Urban%20Style",
+//     preco: 899.9,
+//     categoria: Categoria.BOLSO,
+//   },
+//   {
+//     uuid: uuidv4() as UUIDTypes,
+//     nome: "Luxury Gold",
+//     imagemCaminho: "/placeholder4.jpg",
+//     whatsappLink: "https://wa.me/555197274193?text=Tenho%20interesse%20no%20Luxury%20Gold",
+//     preco: 2999.9,
+//     categoria: Categoria.CORDA,
+//   },
+//   {
+//     uuid: uuidv4() as UUIDTypes,
+//     nome: "Adventure X",
+//     imagemCaminho: "/placeholder4.jpg",
+//     whatsappLink: "https://wa.me/555197274193?text=Tenho%20interesse%20no%20Adventure%20X",
+//     preco: 1799.9,
+//     categoria: Categoria.QUARTZO,
+//   },
+//   {
+//     uuid: uuidv4() as UUIDTypes,
+//     nome: "Minimal Black",
+//     imagemCaminho: "/placeholder4.jpg",
+//     whatsappLink: "https://wa.me/555197274193?text=Tenho%20interesse%20no%20Minimal%20Black",
+//     preco: 1099.9,
+//     categoria: Categoria.MECANICO_BATERIA,
+//   },
+//   {
+//     uuid: uuidv4() as UUIDTypes,
+//     nome: "Classic Silver",
+//     imagemCaminho: "/placeholder4.jpg",
+//     whatsappLink: "https://wa.me/555197274193?text=Tenho%20interesse%20no%20Classic%20Silver",
+//     preco: 1399.9,
+//     categoria: Categoria.MECANICO_BATERIA,
+//   },
+//   {
+//     uuid: uuidv4() as UUIDTypes,
+//     nome: "Ocean Blue",
+//     imagemCaminho: "/placeholder4.jpg",
+//     whatsappLink: "https://wa.me/555197274193?text=Tenho%20interesse%20no%20Ocean%20Blue",
+//     preco: 1899.9,
+//     categoria: Categoria.BOLSO,
+//   },
+//   {
+//     uuid: uuidv4() as UUIDTypes,
+//     nome: "Retro Chic",
+//     imagemCaminho: "/placeholder4.jpg",
+//     whatsappLink: "https://wa.me/555197274193?text=Tenho%20interesse%20no%20Retro%20Chic",
+//     preco: 999.9,
+//     categoria: Categoria.BOLSO,
+//   },
+//   {
+//     uuid: uuidv4() as UUIDTypes,
+//     nome: "Modern Steel",
+//     imagemCaminho: "/placeholder4.jpg",
+//     whatsappLink: "https://wa.me/555197274193?text=Tenho%20interesse%20no%20Modern%20Steel",
+//     preco: 1499.9,
+//     categoria: Categoria.MECANICO_BATERIA,
+//   },
+//   {
+//     uuid: uuidv4() as UUIDTypes,
+//     nome: "Explorer",
+//     imagemCaminho: "/placeholder4.jpg",
+//     whatsappLink: "https://wa.me/555197274193?text=Tenho%20interesse%20no%20Explorer",
+//     preco: 2099.9,
+//     categoria: Categoria.CORDA,
+//   },
+//   {
+//     uuid: uuidv4() as UUIDTypes,
+//     nome: "Vintage Leather",
+//     imagemCaminho: "/placeholder4.jpg",
+//     whatsappLink: "https://wa.me/555197274193?text=Tenho%20interesse%20no%20Vintage%20Leather",
+//     preco: 1199.9,
+//     categoria: Categoria.QUARTZO,
+//   },
+// ]
 
 const produtosExemplo: Produtos[] = [
   {
-    uuid: uuidv4() as UUIDTypes,
+    uuid: "asd" as UUIDTypes,
     nome: "Elegance Classic",
     imagemCaminho: "/placeholder4.jpg",
     whatsappLink: "https://wa.me/555197274193?text=Tenho%20interesse%20no%20Elegance%20Classic",
@@ -14,7 +115,7 @@ const produtosExemplo: Produtos[] = [
     categoria: Categoria.MECANICO_BATERIA,
   },
   {
-    uuid: uuidv4() as UUIDTypes,
+    uuid: "bds" as UUIDTypes,
     nome: "Sport Pro",
     imagemCaminho: "/placeholder4.jpg",
     whatsappLink: "https://wa.me/555197274193?text=Tenho%20interesse%20no%20Sport%20Pro",
@@ -22,7 +123,7 @@ const produtosExemplo: Produtos[] = [
     categoria: Categoria.SOLAR,
   },
   {
-    uuid: uuidv4() as UUIDTypes,
+    uuid: "ert" as UUIDTypes,
     nome: "Urban Style",
     imagemCaminho: "/placeholder4.jpg",
     whatsappLink: "https://wa.me/555197274193?text=Tenho%20interesse%20no%20Urban%20Style",
@@ -30,7 +131,7 @@ const produtosExemplo: Produtos[] = [
     categoria: Categoria.BOLSO,
   },
   {
-    uuid: uuidv4() as UUIDTypes,
+    uuid: "hjk" as UUIDTypes,
     nome: "Luxury Gold",
     imagemCaminho: "/placeholder4.jpg",
     whatsappLink: "https://wa.me/555197274193?text=Tenho%20interesse%20no%20Luxury%20Gold",
@@ -38,7 +139,7 @@ const produtosExemplo: Produtos[] = [
     categoria: Categoria.CORDA,
   },
   {
-    uuid: uuidv4() as UUIDTypes,
+    uuid: "asw" as UUIDTypes,
     nome: "Adventure X",
     imagemCaminho: "/placeholder4.jpg",
     whatsappLink: "https://wa.me/555197274193?text=Tenho%20interesse%20no%20Adventure%20X",
@@ -46,7 +147,7 @@ const produtosExemplo: Produtos[] = [
     categoria: Categoria.QUARTZO,
   },
   {
-    uuid: uuidv4() as UUIDTypes,
+    uuid: "hkt" as UUIDTypes,
     nome: "Minimal Black",
     imagemCaminho: "/placeholder4.jpg",
     whatsappLink: "https://wa.me/555197274193?text=Tenho%20interesse%20no%20Minimal%20Black",
@@ -54,7 +155,7 @@ const produtosExemplo: Produtos[] = [
     categoria: Categoria.MECANICO_BATERIA,
   },
   {
-    uuid: uuidv4() as UUIDTypes,
+    uuid: "hkd" as UUIDTypes,
     nome: "Classic Silver",
     imagemCaminho: "/placeholder4.jpg",
     whatsappLink: "https://wa.me/555197274193?text=Tenho%20interesse%20no%20Classic%20Silver",
@@ -62,7 +163,7 @@ const produtosExemplo: Produtos[] = [
     categoria: Categoria.MECANICO_BATERIA,
   },
   {
-    uuid: uuidv4() as UUIDTypes,
+    uuid: "aaa" as UUIDTypes,
     nome: "Ocean Blue",
     imagemCaminho: "/placeholder4.jpg",
     whatsappLink: "https://wa.me/555197274193?text=Tenho%20interesse%20no%20Ocean%20Blue",
@@ -70,7 +171,7 @@ const produtosExemplo: Produtos[] = [
     categoria: Categoria.BOLSO,
   },
   {
-    uuid: uuidv4() as UUIDTypes,
+    uuid: "bbb" as UUIDTypes,
     nome: "Retro Chic",
     imagemCaminho: "/placeholder4.jpg",
     whatsappLink: "https://wa.me/555197274193?text=Tenho%20interesse%20no%20Retro%20Chic",
@@ -78,7 +179,7 @@ const produtosExemplo: Produtos[] = [
     categoria: Categoria.BOLSO,
   },
   {
-    uuid: uuidv4() as UUIDTypes,
+    uuid: "ddd" as UUIDTypes,
     nome: "Modern Steel",
     imagemCaminho: "/placeholder4.jpg",
     whatsappLink: "https://wa.me/555197274193?text=Tenho%20interesse%20no%20Modern%20Steel",
@@ -86,7 +187,7 @@ const produtosExemplo: Produtos[] = [
     categoria: Categoria.MECANICO_BATERIA,
   },
   {
-    uuid: uuidv4() as UUIDTypes,
+    uuid: "lll" as UUIDTypes,
     nome: "Explorer",
     imagemCaminho: "/placeholder4.jpg",
     whatsappLink: "https://wa.me/555197274193?text=Tenho%20interesse%20no%20Explorer",
@@ -94,7 +195,7 @@ const produtosExemplo: Produtos[] = [
     categoria: Categoria.CORDA,
   },
   {
-    uuid: uuidv4() as UUIDTypes,
+    uuid: "ppp" as UUIDTypes,
     nome: "Vintage Leather",
     imagemCaminho: "/placeholder4.jpg",
     whatsappLink: "https://wa.me/555197274193?text=Tenho%20interesse%20no%20Vintage%20Leather",
@@ -102,6 +203,9 @@ const produtosExemplo: Produtos[] = [
     categoria: Categoria.QUARTZO,
   },
 ]
+
+
+
 
 export default function Table() {
 
@@ -114,14 +218,14 @@ export default function Table() {
                         <th className="px-4 py-2 font-bold text-base">Nome</th>
                         <th className="px-4 py-2 font-bold text-base">Preço</th>
                         <th className="px-4 py-2 font-bold text-base">Categoria</th>
-
                         <th className="px-4 py-2 font-bold text-base">Foto</th>
+                        <th className="px-4 py-2 font-bold text-base">Ações</th>
                     </tr>
                 </thead>
                 <tbody className="text-gray-700">
                     {produtosExemplo.map((emp, index) => (
                         <tr
-                            key={emp.uuid}
+                            key={emp.uuid as string}
                             className="hover:bg-gray-100 transition-colors border-b border-gray-200 last:border-none text-left"
                         >
                             <td className="px-4 py-2">{emp.uuid}</td>
@@ -129,6 +233,10 @@ export default function Table() {
                             <td className="px-4 py-2">{emp.preco}</td>
                             <td className="px-4 py-2">{emp.categoria}</td>
                             <td className="px-4 py-2">{emp.imagemCaminho}</td>
+                            <td className="px-4 py-2 flex gap-1">
+                              <Button className="rounded-full bg-orange-400 text-white hover:bg-orange-300 cursor-pointer"><Pencil /></Button>
+                              <Button className="rounded-full bg-black text-white hover:bg-gray-600 cursor-pointer"><Trash /></Button>
+                            </td>
                         </tr>
                     ))}
                 </tbody>
