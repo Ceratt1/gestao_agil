@@ -291,9 +291,10 @@ export default function CatalogoHome() {
                       href={produto.whatsappLink}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center justify-between text-white bg-black px-4 py-2 rounded-md hover:bg-white hover:text-black"
+                      className="flex items-center justify-center text-white bg-black px-4 py-2 rounded-md hover:bg-white hover:text-black text-center w-full h-full"
+                      style={{ minHeight: "40px" }}
                     >
-                      Conversar no WhatsApp
+                      <span className="w-full text-center">Conversar no WhatsApp</span>
                     </a>
                   </div>
                 </div>
