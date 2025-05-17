@@ -1,79 +1,81 @@
 import { useState, useEffect } from "react";
 
+// As categorias disponíveis, iguais ao seu model Django
+const categorias = [
+  "Bolso",
+  "Mesa",
+  "Parede",
+  "Pulso",
+  "Torre",
+  "Todas",
+  "Corda",
+  "Automatico",
+  "Bateria",
+  "Solar",
+  "Quartzo",
+];
+
 type ProdutoAPI = {
   id?: number;
   titulo?: string;
   valor?: string;
   descricao?: string;
   caminho_imagem?: string;
+  categoria?: string;
 };
 
-export default function AdminProductForm({
-  produto,
-  onSubmit,
-}: {
-  produto?: ProdutoAPI | null;
+type Props = {
+  produto: ProdutoAPI;
   onSubmit: () => void;
-}) {
-  const [titulo, setTitulo] = useState(produto?.titulo || "");
-  const [valor, setValor] = useState(produto?.valor || "");
-  const [descricao, setDescricao] = useState(produto?.descricao || "");
-  const [caminho_imagem, setCaminhoImagem] = useState(produto?.caminho_imagem || "");
-  const [mensagem, setMensagem] = useState("");
-  const [loading, setLoading] = useState(false);
+};
+
+export default function AdminProductForm({ produto, onSubmit }: Props) {
+  const [titulo, setTitulo] = useState(produto.titulo || "");
+  const [valor, setValor] = useState(produto.valor || "");
+  const [descricao, setDescricao] = useState(produto.descricao || "");
+  const [caminhoImagem, setCaminhoImagem] = useState(produto.caminho_imagem || "");
+  const [categoria, setCategoria] = useState(produto.categoria || "Todas");
 
   useEffect(() => {
-    setTitulo(produto?.titulo || "");
-    setValor(produto?.valor || "");
-    setDescricao(produto?.descricao || "");
-    setCaminhoImagem(produto?.caminho_imagem || "");
+    setTitulo(produto.titulo || "");
+    setValor(produto.valor || "");
+    setDescricao(produto.descricao || "");
+    setCaminhoImagem(produto.caminho_imagem || "");
+    setCategoria(produto.categoria || "Todas");
   }, [produto]);
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setMensagem("");
-    setLoading(true);
+    const payload = {
+      titulo,
+      valor,
+      descricao,
+      caminho_imagem: caminhoImagem,
+      categoria,
+    };
 
-    const formData = new FormData();
-    formData.append("titulo", titulo);
-    formData.append("valor", valor);
-    formData.append("descricao", descricao);
-    formData.append("caminho_imagem", caminho_imagem);
-
-    const url = produto?.id
+    const method = produto.id ? "PUT" : "POST";
+    const url = produto.id
       ? `http://localhost:8000/api/produtos/${produto.id}/`
       : "http://localhost:8000/api/produtos/";
-    const method = produto?.id ? "PUT" : "POST";
 
-    try {
-      const response = await fetch(url, {
-        method,
-        body: formData,
-        headers: {
-          Authorization: `Token ${localStorage.getItem("token") || ""}`,
-        },
-      });
+    await fetch(url, {
+      method,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
 
-      if (response.ok) {
-        setMensagem(produto?.id ? "Produto atualizado!" : "Produto cadastrado!");
-        onSubmit();
-      } else {
-        const data = await response.json();
-        setMensagem(data.detail || data.error || "Erro ao salvar produto.");
-      }
-    } catch {
-      setMensagem("Erro ao salvar produto.");
-    }
-    setLoading(false);
+    onSubmit();
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+    <form onSubmit={handleSubmit} className="space-y-4">
       <div>
-        <label className="block text-md font-semibold text-gray-700 mb-1">Nome</label>
+        <label className="block text-sm font-semibold text-gray-700 mb-1">Título</label>
         <input
           type="text"
-          name="titulo"
           className="bg-white w-full text-black border border-gray-300"
           value={titulo}
           onChange={e => setTitulo(e.target.value)}
@@ -81,12 +83,10 @@ export default function AdminProductForm({
         />
       </div>
       <div>
-        <label className="block text-md font-semibold text-gray-700 mb-1">Preço</label>
+        <label className="block text-sm font-semibold text-gray-700 mb-1">Valor</label>
         <input
           type="number"
-          name="valor"
           className="bg-white w-full text-black border border-gray-300"
-          step="0.01"
           value={valor}
           onChange={e => setValor(e.target.value)}
           required
@@ -94,9 +94,7 @@ export default function AdminProductForm({
       </div>
       <div>
         <label className="block text-sm font-semibold text-gray-700 mb-1">Descrição</label>
-        <input
-          type="text"
-          name="descricao"
+        <textarea
           className="bg-white w-full text-black border border-gray-300"
           value={descricao}
           onChange={e => setDescricao(e.target.value)}
@@ -106,16 +104,30 @@ export default function AdminProductForm({
         <label className="block text-sm font-semibold text-gray-700 mb-1">Caminho da Imagem</label>
         <input
           type="text"
-          name="caminho_imagem"
           className="bg-white w-full text-black border border-gray-300"
-          value={caminho_imagem}
+          value={caminhoImagem}
           onChange={e => setCaminhoImagem(e.target.value)}
         />
       </div>
-      <button type="submit" className='bg-black cursor-pointer text-white py-2 rounded' disabled={loading}>
-        {loading ? "Salvando..." : produto?.id ? "Salvar alterações" : "Cadastrar"}
+      <div>
+        <label className="block text-sm font-semibold text-gray-700 mb-1">Categoria</label>
+        <select
+          className="bg-white w-full text-black border border-gray-300"
+          value={categoria}
+          onChange={e => setCategoria(e.target.value)}
+          required
+        >
+          {categorias.map(cat => (
+            <option key={cat} value={cat}>{cat}</option>
+          ))}
+        </select>
+      </div>
+      <button
+        type="submit"
+        className="mt-4 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+      >
+        Salvar
       </button>
-      {mensagem && <span className="text-center text-red-500">{mensagem}</span>}
     </form>
   );
 }

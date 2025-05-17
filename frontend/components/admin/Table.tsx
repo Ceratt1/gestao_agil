@@ -2,6 +2,7 @@ type ProdutoAPI = {
   id: number;
   titulo: string;
   valor: string;
+  categoria?: string;
   url_editar: string;
   url_excluir: string;
   // outros campos se quiser
@@ -21,6 +22,7 @@ export default function Table({ produtos, onEditar }: TableProps) {
             <th className="px-4 py-2 font-bold text-base">ID</th>
             <th className="px-4 py-2 font-bold text-base">Nome</th>
             <th className="px-4 py-2 font-bold text-base">Preço</th>
+            <th className="px-4 py-2 font-bold text-base">Categoria</th>
             <th className="px-4 py-2 font-bold text-base">Ações</th>
           </tr>
         </thead>
@@ -30,6 +32,7 @@ export default function Table({ produtos, onEditar }: TableProps) {
               <td className="px-4 py-2">{emp.id}</td>
               <td className="px-4 py-2">{emp.titulo}</td>
               <td className="px-4 py-2">{Number(emp.valor).toFixed(2)}</td>
+              <td className="px-4 py-2">{emp.categoria || "-"}</td>
               <td className="px-4 py-2 flex gap-2">
                 <a
                   href="#"
