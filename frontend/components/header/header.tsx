@@ -121,6 +121,11 @@ export default function Header() {
                 Login
               </Button>
             </Link>
+              <Link href="/dashboard/registro">
+              <Button className="rounded-full bg-orange-400 text-white hover:bg-orange-500" size="sm">
+                Registro
+              </Button>
+            </Link>
           </div>
         ) : (
           <div className="hidden md:flex items-center space-x-4">
