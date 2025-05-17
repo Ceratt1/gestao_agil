@@ -238,6 +238,10 @@ def listar_usuarios(request):
     return Response({'usuarios': data}, status=status.HTTP_200_OK)
 
 
+@csrf_exempt
+def custom_obtain_auth_token(request):
+    return obtain_auth_token(request)
+
 # ============================================================
 # PRODUTOS
 # ============================================================
@@ -378,11 +382,13 @@ def listar_produtos(request):
     ]
     return Response({'produtos': data}, status=status.HTTP_200_OK)
 
+
+
 @api_view(['GET'])
-def listar_ultimos_produtos(request):
+def listar_todos_produtos_publico(request):
     """
-    GET /listar_ultimos_produtos/
-    Lista os 6 produtos mais recentes(por exepmlo).
+    GET /listar_todos_produtos_publico/
+    Lista todos os produtos do mais recente para o mais antigo (dados públicos).
     Resposta:
         {
             "produtos": [
@@ -391,14 +397,12 @@ def listar_ultimos_produtos(request):
                     "titulo": "...",
                     "descricao": "...",
                     "valor": "...",
-                    "caminho_imagem": "...",
-                    "url_editar": "...",
-                    "url_excluir": "..."
+                    "caminho_imagem": "..."
                 }
             ]
         }
     """
-    produtos = Produto.objects.all().order_by('-id')[:6] #mude para a quantidade desejada
+    produtos = Produto.objects.all().order_by('-id')
     data = [
         {
             'id': produto.id,
@@ -406,12 +410,38 @@ def listar_ultimos_produtos(request):
             'descricao': produto.descricao,
             'valor': str(produto.valor),
             'caminho_imagem': produto.caminho_imagem,
-            'url_editar': request.build_absolute_uri(
-                reverse('produto-detail', args=[produto.id])
-            ),
-            'url_excluir': request.build_absolute_uri(
-                reverse('produto-detail', args=[produto.id])
-            ),
+        }
+        for produto in produtos
+    ]
+    return Response({'produtos': data}, status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+def listar_ultimos_4produtos(request):
+    """
+    GET /listar_todos_produtos_publico/
+    Lista todos os produtos do mais recente para o mais antigo (dados públicos).
+    Resposta:
+        {
+            "produtos": [
+                {
+                    "id": ...,
+                    "titulo": "...",
+                    "descricao": "...",
+                    "valor": "...",
+                    "caminho_imagem": "..."
+                }
+            ]
+        }
+    """
+    produtos = Produto.objects.all().order_by('-id')[:4]
+    data = [
+        {
+            'id': produto.id,
+            'titulo': produto.titulo,
+            'descricao': produto.descricao,
+            'valor': str(produto.valor),
+            'caminho_imagem': produto.caminho_imagem,
         }
         for produto in produtos
     ]
