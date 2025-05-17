@@ -12,7 +12,7 @@ class Produto(models.Model):
         return self.titulo
 
 class Usuario(AbstractUser):
-    id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True, primary_key=True)
+    uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     class Regra(models.TextChoices):
         ADMIN = 'ADMIN', 'Admin'
         REGULAR = 'REGULAR', 'Regular'

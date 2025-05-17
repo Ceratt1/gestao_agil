@@ -1,9 +1,8 @@
 from django.urls import path, include
 from . import views
 from rest_framework.routers import DefaultRouter
-from .views import ProdutoViewSet, UsuarioViewSet, link_pagamento_whatsapp, custom_obtain_auth_token, listar_ultimos_4produtos, listar_todos_produtos_publico
-
-
+from .views import ProdutoViewSet, UsuarioViewSet, link_pagamento_whatsapp, CustomAuthToken, listar_ultimos_4produtos, listar_todos_produtos_publico
+from rest_framework.authtoken.views import obtain_auth_token
 router = DefaultRouter()
 router.register(r'produtos', ProdutoViewSet, basename='produto')
 router.register(r'usuarios', UsuarioViewSet, basename='usuario')
@@ -19,7 +18,7 @@ urlpatterns = [
     path('listar_ultimos_4produtos/', views.listar_ultimos_4produtos, name='listar_ultimos_4produtos'),
     path('listar_todos_produtos_publico/', views.listar_todos_produtos_publico, name='listar_todos_produtos_publico'),
     path('link_pagamento_whatsapp/<int:produto_id>/', link_pagamento_whatsapp, name='link_pagamento_whatsapp'),
-    path('api-token-auth/', custom_obtain_auth_token, name='api_token_auth'),
+    path('api-token-auth/', CustomAuthToken.as_view(), name='api_token_auth')
    
 
 

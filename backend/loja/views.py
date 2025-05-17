@@ -14,7 +14,8 @@ from django.contrib.auth import get_user_model
 from urllib.parse import quote
 from django.urls import reverse
 User = get_user_model()
-from rest_framework.authtoken.views import obtain_auth_token
+from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.authtoken.models import Token
 
 #Python versão: 3.12.10
 
@@ -238,10 +239,18 @@ def listar_usuarios(request):
     return Response({'usuarios': data}, status=status.HTTP_200_OK)
 
 
-@csrf_exempt
-def custom_obtain_auth_token(request):
-    return obtain_auth_token(request)
-
+class CustomAuthToken(ObtainAuthToken):
+    def post(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data, context={'request': request})
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data['user']
+        token, created = Token.objects.get_or_create(user=user)
+        return Response({
+            'token': token.key,
+            'is_staff': user.is_staff,
+            'is_superuser': user.is_superuser,
+            'username': user.username,
+        })
 # ============================================================
 # PRODUTOS
 # ============================================================
@@ -465,7 +474,7 @@ def link_pagamento_whatsapp(request, produto_id):
         admin = User.objects.filter(is_superuser=True).first()
         if not admin or not admin.contato_whatsapp:
             return Response({'error': 'Admin não possui WhatsApp cadastrado.'}, status=400)
-        mensagem = f"Olá! Tenho interesse no produto: {produto.titulo} - {produto.valor}"
+        mensagem = f"Olá! Tenho interesse no produto: {produto.titulo} - R${produto.valor}"
         link = f"https://wa.me/55{admin.contato_whatsapp}?text={quote(mensagem)}"
         return Response({'link': link})
     except Produto.DoesNotExist:
