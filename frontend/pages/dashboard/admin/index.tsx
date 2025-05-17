@@ -5,6 +5,7 @@ import Footer from "@/components/footer/footer"
 export default function Admin() {
     return (
          <div className="min-h-screen flex flex-col">
+              
               <AdminHeader />
                 
               <AdminContent />

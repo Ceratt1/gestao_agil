@@ -2,10 +2,17 @@ type ProdutoAPI = {
   id: number;
   titulo: string;
   valor: string;
-  // adicione outros campos se quiser
+  url_editar: string;
+  url_excluir: string;
+  // outros campos se quiser
 };
 
-export default function Table({ produtos }: { produtos: ProdutoAPI[] }) {
+type TableProps = {
+  produtos: ProdutoAPI[];
+  onEditar: (id: number) => void;
+};
+
+export default function Table({ produtos, onEditar }: TableProps) {
   return (
     <div className="overflow-x-auto bg-white">
       <table className="min-w-full table-auto border-collapse">
@@ -23,8 +30,25 @@ export default function Table({ produtos }: { produtos: ProdutoAPI[] }) {
               <td className="px-4 py-2">{emp.id}</td>
               <td className="px-4 py-2">{emp.titulo}</td>
               <td className="px-4 py-2">{Number(emp.valor).toFixed(2)}</td>
-              <td className="px-4 py-2 flex gap-1">
-                {/* Botões de ação */}
+              <td className="px-4 py-2 flex gap-2">
+                <a
+                  href="#"
+                  onClick={e => {
+                    e.preventDefault();
+                    onEditar(emp.id);
+                  }}
+                  className="text-blue-600 hover:underline cursor-pointer"
+                >
+                  Editar
+                </a>
+                <a
+                  href={emp.url_excluir}
+                  className="text-red-600 hover:underline"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Excluir
+                </a>
               </td>
             </tr>
           ))}

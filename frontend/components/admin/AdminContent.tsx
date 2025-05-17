@@ -1,35 +1,84 @@
+import { useEffect, useState } from "react";
+import Table from "./Table";
+import AdminProductForm from "./AdminProductForm";
+
 type ProdutoAPI = {
   id: number;
   titulo: string;
   valor: string;
-  // adicione outros campos se quiser
+  descricao?: string;
+  caminho_imagem?: string;
+  categoria?: string;
+  url_editar?: string;
+  url_excluir?: string;
 };
 
-export default function Table({ produtos }: { produtos: ProdutoAPI[] }) {
+export default function AdminContent() {
+  const [produtos, setProdutos] = useState<ProdutoAPI[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [produtoEditando, setProdutoEditando] = useState<ProdutoAPI | null>(null);
+
+  // Buscar produtos do backend
+  const fetchProdutos = () => {
+    setLoading(true);
+    fetch("http://localhost:8000/listar_produtos/")
+      .then(res => res.json())
+      .then(data => {
+        setProdutos(data.produtos);
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
+  };
+
+  useEffect(() => {
+    fetchProdutos();
+  }, []);
+
+  // Função chamada ao clicar em "Editar"
+  const handleEditar = async (id: number) => {
+    const res = await fetch(`http://localhost:8000/api/produtos/${id}/`);
+    const data = await res.json();
+    setProdutoEditando(data);
+  };
+
+  // Fechar o formulário/modal de edição
+  const fecharEdicao = () => setProdutoEditando(null);
+
   return (
-    <div className="overflow-x-auto bg-white">
-      <table className="min-w-full table-auto border-collapse">
-        <thead>
-          <tr className="text-black text-left border-b border-orange-400">
-            <th className="px-4 py-2 font-bold text-base">ID</th>
-            <th className="px-4 py-2 font-bold text-base">Nome</th>
-            <th className="px-4 py-2 font-bold text-base">Preço</th>
-            <th className="px-4 py-2 font-bold text-base">Ações</th>
-          </tr>
-        </thead>
-        <tbody className="text-gray-700">
-          {produtos.map((emp) => (
-            <tr key={emp.id} className="hover:bg-gray-100 transition-colors border-b border-gray-200 last:border-none text-left">
-              <td className="px-4 py-2">{emp.id}</td>
-              <td className="px-4 py-2">{emp.titulo}</td>
-              <td className="px-4 py-2">{Number(emp.valor).toFixed(2)}</td>
-              <td className="px-4 py-2 flex gap-1">
-                {/* Botões de ação */}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+    <main className="flex-1 p-6 bg-gray-300">
+      <div className="container mx-auto">
+        <div className="max-w-4xl mx-auto bg-white shadow-lg rounded-lg p-6 text-center">
+          <h2 className="text-xl font-semibold text-gray-800 mb-4">Dashboard</h2>
+          <p className="text-gray-600">Começar a fazer o crud aqui</p>
+        </div>
+        {loading ? (
+          <div className="text-center mt-6">Carregando...</div>
+        ) : (
+          <Table produtos={produtos} onEditar={handleEditar} />
+        )}
+
+        {/* Formulário de edição em modal */}
+        {produtoEditando && (
+          <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+            <div className="bg-white p-8 rounded shadow-lg relative w-full max-w-lg">
+              <button
+                onClick={fecharEdicao}
+                className="absolute top-2 right-2 text-xl"
+                aria-label="Fechar"
+              >
+                ×
+              </button>
+              <AdminProductForm
+                produto={produtoEditando}
+                onSubmit={() => {
+                  fecharEdicao();
+                  fetchProdutos();
+                }}
+              />
+            </div>
+          </div>
+        )}
+      </div>
+    </main>
   );
 }
