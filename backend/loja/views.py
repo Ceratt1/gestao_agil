@@ -9,11 +9,12 @@ from rest_framework.decorators import api_view, action
 from rest_framework import status, permissions
 from django.db.models import Q
 import json
-from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from rest_framework.permissions import IsAuthenticated, IsAdminUser, BasePermission, SAFE_METHODS
 from django.contrib.auth import get_user_model
 from urllib.parse import quote
 from django.urls import reverse
 User = get_user_model()
+from rest_framework.authtoken.views import obtain_auth_token
 
 #Python versão: 3.12.10
 
@@ -236,10 +237,27 @@ def listar_usuarios(request):
     ]
     return Response({'usuarios': data}, status=status.HTTP_200_OK)
 
+
 # ============================================================
 # PRODUTOS
 # ============================================================
 
+class IsAdminOrStaffOrReadOnly(BasePermission):
+    """
+    Permite apenas leitura para todos.
+    Só permite POST, PUT, PATCH, DELETE para staff ou admin (regra='ADMIN').
+    """
+    def has_permission(self, request, view):
+        # Métodos de leitura são sempre permitidos
+        if request.method in SAFE_METHODS:
+            return True
+        user = request.user
+        # Só permite se for staff ou regra ADMIN
+        return (
+            user and user.is_authenticated and
+            (user.is_staff or getattr(user, 'regra', None) == 'ADMIN')
+        )
+    
 class ProdutoViewSet(ModelViewSet):
     """
     ViewSet padrão do DRF para produtos.
@@ -252,7 +270,7 @@ class ProdutoViewSet(ModelViewSet):
     """
     queryset = Produto.objects.all().order_by('-id')
     serializer_class = ProdutoSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    ppermission_classes = [IsAdminOrStaffOrReadOnly]
 
 def search_products(request):
     """
