@@ -2,8 +2,10 @@ from django.http import JsonResponse
 from django.contrib.auth import authenticate, login, logout
 from django.views.decorators.csrf import csrf_exempt
 from .models import Produto
-from .serializers import ProdutoSerializer
+from drf_yasg.utils import swagger_auto_schema
+from .serializers import ProdutoSerializer, UsuarioSerializer
 from rest_framework.viewsets import ModelViewSet, ViewSet
+from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, action
 from rest_framework import status, permissions
@@ -17,11 +19,55 @@ User = get_user_model()
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 
-#Python versão: 3.12.10
+
+
+# Python versão: 3.12.10
+
+
+
+
+# Definindo os Schemas do usuário para o Swagger
+class UsuarioSchemaView(APIView):
+    @swagger_auto_schema(
+        responses={200: UsuarioSerializer}
+    )
+    def get(self, request):
+        """Endpoint só para mostrar o schema do Usuario no Swagger"""
+        return Response({})
+    
+class ProdutoSchemaView(APIView):
+    @swagger_auto_schema(
+        responses={200: ProdutoSerializer}
+    )
+    def get(self, request):
+        """Endpoint só para mostrar o schema do Produto no Swagger"""
+        return Response({})
+    
+
+
 
 # ============================================================
 # AUTENTICAÇÃO E USUÁRIO
 # ============================================================
+
+# Ver este Schema aqui.
+class CustomAuthToken(ObtainAuthToken):
+    def post(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data, context={'request': request})
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data['user']
+        token, created = Token.objects.get_or_create(user=user)
+        return Response({
+            'token': token.key,
+            'is_staff': user.is_staff,
+            'is_superuser': user.is_superuser,
+            'username': user.username,
+        })
+
+    
+    
+    
+
 
 @csrf_exempt
 def registro_view(request):
@@ -92,6 +138,10 @@ def logout_view(request):
         logout(request)
         return JsonResponse({'success': 'Logout realizado com sucesso!'})
     return JsonResponse({'error': 'Método não permitido.'}, status=405)
+
+
+
+
 
 class UsuarioViewSet(ViewSet):
     """
@@ -239,18 +289,23 @@ def listar_usuarios(request):
     return Response({'usuarios': data}, status=status.HTTP_200_OK)
 
 
-class CustomAuthToken(ObtainAuthToken):
-    def post(self, request, *args, **kwargs):
-        serializer = self.serializer_class(data=request.data, context={'request': request})
-        serializer.is_valid(raise_exception=True)
-        user = serializer.validated_data['user']
-        token, created = Token.objects.get_or_create(user=user)
-        return Response({
-            'token': token.key,
-            'is_staff': user.is_staff,
-            'is_superuser': user.is_superuser,
-            'username': user.username,
-        })
+
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
 # ============================================================
 # PRODUTOS
 # ============================================================
@@ -467,8 +522,8 @@ def listar_ultimos_4produtos(request):
 
 @api_view(['GET'])
 def link_pagamento_whatsapp(request, produto_id):
+    
     """
-    GET /link_pagamento_whatsapp/<produto_id>/
     Gera um link do WhatsApp para o admin com mensagem sobre o produto selecionado.
     Resposta:
         {"link": "https://wa.me/55<whatsapp_admin>?text=Olá! Tenho interesse no produto: ..."}

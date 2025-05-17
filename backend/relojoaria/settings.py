@@ -26,6 +26,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'corsheaders',
     'loja',
+    'drf_yasg',
     'rest_framework.authtoken',
    
 ]
