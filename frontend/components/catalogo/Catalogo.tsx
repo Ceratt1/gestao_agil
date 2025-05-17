@@ -16,7 +16,7 @@ import {
   X,
 } from "lucide-react"
 import { Produtos } from "@/@types/Produtos"
-import { UUIDTypes, v4 as uuidv4 } from "uuid"
+import { UUIDTypes } from "uuid"
 import { Categoria } from "@/@types/Categoria.enum"
 
 export default function CatalogoHome() {
@@ -35,12 +35,12 @@ export default function CatalogoHome() {
       .then(data => {
         // Mapeia os campos da API para o seu tipo Produtos
         const produtosApi: Produtos[] = data.produtos.map((p: any) => ({
-          uuid: p.id, // ou uuidv4() se quiser gerar um novo
+          uuid: p.id,
           nome: p.titulo,
           imagemCaminho: p.caminho_imagem || "/placeholder4.jpg",
           whatsappLink: `https://wa.me/555197274193?text=Tenho%20interesse%20no%20${encodeURIComponent(p.titulo)}`,
           preco: Number(p.valor),
-          categoria: p.categoria || Categoria.TODAS, // ajuste conforme seu backend
+          categoria: p.categoria || Categoria.TODAS,
           descricao: p.descricao,
         }))
         setProdutos(produtosApi)
@@ -62,7 +62,7 @@ export default function CatalogoHome() {
   useEffect(() => {
     let result = [...produtos]
 
-    if (categoriaFiltro !== "Todas") {
+    if (categoriaFiltro !== Categoria.TODAS) {
       result = result.filter((p) => p.categoria === categoriaFiltro)
     }
 
@@ -79,7 +79,8 @@ export default function CatalogoHome() {
     setFilteredProdutos(result)
   }, [categoriaFiltro, precoRange, searchTerm, produtos])
 
-  const categorias = ["Todas", ...Array.from(new Set(produtos.map((p) => p.categoria)))]
+  // Use as categorias do enum Categoria
+  const categorias = Object.values(Categoria)
   const minPreco = produtos.length > 0 ? Math.min(...produtos.map((p) => p.preco)) : 0
   const maxPreco = produtos.length > 0 ? Math.max(...produtos.map((p) => p.preco)) : 4000
 

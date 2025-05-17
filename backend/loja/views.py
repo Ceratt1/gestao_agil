@@ -326,6 +326,7 @@ def search_products(request):
             'descricao': p.descricao,
             'caminho_imagem': p.caminho_imagem,
             'valor': str(p.valor),
+            'categoria': p.categoria,
         }
         for p in products
     ]
@@ -380,6 +381,7 @@ def listar_produtos(request):
             'descricao': produto.descricao,
             'valor': str(produto.valor),
             'caminho_imagem': produto.caminho_imagem,
+            'categoria': produto.categoria, 
             'url_editar': request.build_absolute_uri(
                 reverse('produto-detail', args=[produto.id])
             ),
@@ -406,7 +408,8 @@ def listar_todos_produtos_publico(request):
                     "titulo": "...",
                     "descricao": "...",
                     "valor": "...",
-                    "caminho_imagem": "..."
+                    "caminho_imagem": "...",
+                    "categoria": "..."
                 }
             ]
         }
@@ -419,6 +422,7 @@ def listar_todos_produtos_publico(request):
             'descricao': produto.descricao,
             'valor': str(produto.valor),
             'caminho_imagem': produto.caminho_imagem,
+            'categoria': produto.categoria,  # <-- ADICIONE ESTA LINHA
         }
         for produto in produtos
     ]
@@ -451,6 +455,7 @@ def listar_ultimos_4produtos(request):
             'descricao': produto.descricao,
             'valor': str(produto.valor),
             'caminho_imagem': produto.caminho_imagem,
+            'categoria': produto.categoria, 
         }
         for produto in produtos
     ]
