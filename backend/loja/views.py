@@ -13,8 +13,9 @@ from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from django.contrib.auth import get_user_model
 from urllib.parse import quote
 from django.urls import reverse
-
 User = get_user_model()
+
+#Python versão: 3.12.10
 
 # ============================================================
 # AUTENTICAÇÃO E USUÁRIO
@@ -363,7 +364,7 @@ def listar_produtos(request):
 def listar_ultimos_produtos(request):
     """
     GET /listar_ultimos_produtos/
-    Lista os 6 produtos mais recentes.
+    Lista os 6 produtos mais recentes(por exepmlo).
     Resposta:
         {
             "produtos": [
@@ -379,7 +380,7 @@ def listar_ultimos_produtos(request):
             ]
         }
     """
-    produtos = Produto.objects.all().order_by('-id')[:6]
+    produtos = Produto.objects.all().order_by('-id')[:6] #mude para a quantidade desejada
     data = [
         {
             'id': produto.id,
