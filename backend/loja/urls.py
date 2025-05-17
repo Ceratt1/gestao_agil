@@ -13,7 +13,7 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout'),
     path('api/', include(router.urls)),
     path('search_products/', views.search_products, name='search_products'),
-    path('get_produto/<int:id>/', views.get_produto, name='get_produto'),
+    path('get_produto/<uuid:id>/', views.get_produto, name='get_produto'),
     path('listar_produtos/', views.listar_produtos, name='listar_produtos'),
     path('listar_ultimos_4produtos/', views.listar_ultimos_4produtos, name='listar_ultimos_4produtos'),
     path('listar_todos_produtos_publico/', views.listar_todos_produtos_publico, name='listar_todos_produtos_publico'),
