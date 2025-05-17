@@ -474,7 +474,7 @@ def link_pagamento_whatsapp(request, produto_id):
         admin = User.objects.filter(is_superuser=True).first()
         if not admin or not admin.contato_whatsapp:
             return Response({'error': 'Admin não possui WhatsApp cadastrado.'}, status=400)
-        mensagem = f"Olá! Tenho interesse no produto: {produto.titulo} - R${produto.valor}"
+        mensagem = f"Olá! Tenho interesse no produto: {produto.titulo} - {produto.valor}"
         link = f"https://wa.me/55{admin.contato_whatsapp}?text={quote(mensagem)}"
         return Response({'link': link})
     except Produto.DoesNotExist:

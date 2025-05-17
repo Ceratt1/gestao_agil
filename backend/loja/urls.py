@@ -17,7 +17,7 @@ urlpatterns = [
     path('listar_produtos/', views.listar_produtos, name='listar_produtos'),
     path('listar_ultimos_4produtos/', views.listar_ultimos_4produtos, name='listar_ultimos_4produtos'),
     path('listar_todos_produtos_publico/', views.listar_todos_produtos_publico, name='listar_todos_produtos_publico'),
-    path('link_pagamento_whatsapp/<int:produto_id>/', link_pagamento_whatsapp, name='link_pagamento_whatsapp'),
+    path('link_pagamento_whatsapp/<uuid:produto_id>/', link_pagamento_whatsapp, name='link_pagamento_whatsapp'),
     path('api-token-auth/', CustomAuthToken.as_view(), name='api_token_auth')
    
 

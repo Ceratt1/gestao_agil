@@ -50,6 +50,19 @@ export default function AdminContent() {
         <div className="max-w-4xl mx-auto bg-white shadow-lg rounded-lg p-6 text-center">
           <h2 className="text-xl font-semibold text-gray-800 mb-4">Dashboard</h2>
           <p className="text-gray-600">Começar a fazer o crud aqui</p>
+          <button
+            className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+            onClick={() => setProdutoEditando({
+            id: 0,
+            titulo: "",
+            valor: "",
+            descricao: "",
+            caminho_imagem: "",
+            categoria: "",
+            })}
+          >
+           Novo Produto
+          </button>
         </div>
         {loading ? (
           <div className="text-center mt-6">Carregando...</div>
