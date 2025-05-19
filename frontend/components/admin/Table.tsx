@@ -11,9 +11,10 @@ type ProdutoAPI = {
 type TableProps = {
   produtos: ProdutoAPI[];
   onEditar: (id: number) => void;
+  onExcluir: (id: number) => void;
 };
 
-export default function Table({ produtos, onEditar }: TableProps) {
+export default function Table({ produtos, onEditar, onExcluir }: TableProps) {
   return (
     <div className="overflow-x-auto bg-white">
       <table className="min-w-full table-auto border-collapse">
@@ -44,11 +45,13 @@ export default function Table({ produtos, onEditar }: TableProps) {
                 >
                   Editar
                 </a>
-                <a
-                  href={emp.url_excluir}
-                  className="text-red-600 hover:underline"
-                  target="_blank"
-                  rel="noopener noreferrer"
+                 <a
+                  href="#"
+                  onClick={e => {
+                    e.preventDefault();
+                    onExcluir(emp.id);
+                  }}
+                  className="text-red-600 hover:underline cursor-pointer bg-transparent border-none p-0"
                 >
                   Excluir
                 </a>

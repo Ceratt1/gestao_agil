@@ -18,10 +18,10 @@ export default function AdminContent() {
   const [loading, setLoading] = useState(true);
   const [produtoEditando, setProdutoEditando] = useState<ProdutoAPI | null>(null);
 
-  // Buscar produtos do backend (agora via API interna)
+  // Buscar produtos do backend (agora via API interna correta)
   const fetchProdutos = () => {
     setLoading(true);
-    fetch("/api/produtos")
+    fetch("/api/produtos_lista")
       .then(res => res.json())
       .then(data => {
         setProdutos(data.produtos);
@@ -34,13 +34,20 @@ export default function AdminContent() {
     fetchProdutos();
   }, []);
 
-  // Função chamada ao clicar em "Editar" (agora via API interna)
-  const handleEditar = async (id: number) => {
-    const res = await fetch(`/api/produtos?id=${id}`);
-    const data = await res.json();
-    setProdutoEditando(data);
-  };
 
+  // Função chamada ao clicar em "Editar" (agora via API interna)
+const handleEditar = (id: number) => {
+  const produto = produtos.find(p => p.id === id);
+  if (produto) {
+    setProdutoEditando(produto);
+  }
+};
+
+const handleExcluir = async (id: number) => {
+  if (!window.confirm("Tem certeza que deseja excluir este produto?")) return;
+  await fetch(`/api/produtos?id=${id}`, { method: "DELETE" });
+  fetchProdutos();
+};
   // Fechar o formulário/modal de edição
   const fecharEdicao = () => setProdutoEditando(null);
 
@@ -67,7 +74,7 @@ export default function AdminContent() {
         {loading ? (
           <div className="text-center mt-6">Carregando...</div>
         ) : (
-          <Table produtos={produtos} onEditar={handleEditar} />
+          <Table produtos={produtos} onEditar={handleEditar} onExcluir={handleExcluir}/>
         )}
 
         {/* Formulário de edição em modal */}
