@@ -11,36 +11,24 @@ export default function Login() {
     e.preventDefault();
     setMensagem("");
 
-    // 1. Primeiro, autentica pelo /login/
-    const loginResponse = await fetch("http://localhost:8000/login/", {
+    // Agora faz o login pela rota interna do Next.js
+    const loginResponse = await fetch("/api/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username: usuario, password: senha }),
     });
 
-    const loginData = await loginResponse.json();
+    const tokenData = await loginResponse.json();
 
-    if (loginResponse.ok && loginData.success) {
-      // 2. Agora pega o token e permissões pelo /api-token-auth/
-      const tokenResponse = await fetch("http://localhost:8000/api-token-auth/", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username: usuario, password: senha }),
-      });
-      const tokenData = await tokenResponse.json();
-
-      if (tokenResponse.ok && tokenData.token) {
-        setMensagem("Login realizado com sucesso!");
-        localStorage.setItem("token", tokenData.token);
-        localStorage.setItem("username", usuario);
-        localStorage.setItem("is_staff", tokenData.is_staff ? "true" : "false");
-        localStorage.setItem("is_superuser", tokenData.is_superuser ? "true" : "false");
-        window.location.href = "/";
-      } else {
-        setMensagem(tokenData.non_field_errors?.[0] || tokenData.error || "Erro ao obter token.");
-      }
+    if (loginResponse.ok && tokenData.token) {
+      setMensagem("Login realizado com sucesso!");
+      localStorage.setItem("token", tokenData.token);
+      localStorage.setItem("username", usuario);
+      localStorage.setItem("is_staff", tokenData.is_staff ? "true" : "false");
+      localStorage.setItem("is_superuser", tokenData.is_superuser ? "true" : "false");
+      window.location.href = "/";
     } else {
-      setMensagem(loginData.error || "Usuário ou senha inválidos.");
+      setMensagem(tokenData.error || "Usuário ou senha inválidos.");
     }
   };
 

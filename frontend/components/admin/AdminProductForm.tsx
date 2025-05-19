@@ -45,31 +45,31 @@ export default function AdminProductForm({ produto, onSubmit }: Props) {
   }, [produto]);
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const payload = {
-      titulo,
-      valor,
-      descricao,
-      caminho_imagem: caminhoImagem,
-      categoria,
-    };
-
-    const method = produto.id ? "PUT" : "POST";
-    const url = produto.id
-      ? `http://localhost:8000/api/produtos/${produto.id}/`
-      : "http://localhost:8000/api/produtos/";
-
-    await fetch(url, {
-      method,
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
-    });
-
-    onSubmit();
+  e.preventDefault();
+  const payload = {
+    titulo,
+    valor,
+    descricao,
+    caminho_imagem: caminhoImagem,
+    categoria,
   };
 
+  const method = produto.id ? "PUT" : "POST";
+  // Use a rota interna da API do Next.js
+  const url = produto.id
+    ? `/api/produtos?id=${produto.id}`
+    : "/api/produtos";
+
+  await fetch(url, {
+    method,
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
+  });
+
+  onSubmit();
+};
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>

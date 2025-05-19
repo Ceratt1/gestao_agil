@@ -12,7 +12,8 @@ export default function Registro() {
     e.preventDefault();
     setMensagem("");
 
-    const response = await fetch("http://localhost:8000/registro/", {
+    // Agora faz o registro pela rota interna do Next.js
+    const response = await fetch("/api/registro", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username: usuario, email, password: senha }),

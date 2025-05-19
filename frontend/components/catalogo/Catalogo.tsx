@@ -30,7 +30,7 @@ export default function CatalogoHome() {
 
   // Busca produtos do backend ao montar
   useEffect(() => {
-    fetch("http://localhost:8000/listar_todos_produtos_publico/")
+    fetch("/api/catalogo")
       .then(res => res.json())
       .then(data => {
         // Mapeia os campos da API para o seu tipo Produtos

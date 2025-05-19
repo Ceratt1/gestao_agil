@@ -18,10 +18,10 @@ export default function AdminContent() {
   const [loading, setLoading] = useState(true);
   const [produtoEditando, setProdutoEditando] = useState<ProdutoAPI | null>(null);
 
-  // Buscar produtos do backend
+  // Buscar produtos do backend (agora via API interna)
   const fetchProdutos = () => {
     setLoading(true);
-    fetch("http://localhost:8000/listar_produtos/")
+    fetch("/api/produtos")
       .then(res => res.json())
       .then(data => {
         setProdutos(data.produtos);
@@ -34,9 +34,9 @@ export default function AdminContent() {
     fetchProdutos();
   }, []);
 
-  // Função chamada ao clicar em "Editar"
+  // Função chamada ao clicar em "Editar" (agora via API interna)
   const handleEditar = async (id: number) => {
-    const res = await fetch(`http://localhost:8000/api/produtos/${id}/`);
+    const res = await fetch(`/api/produtos?id=${id}`);
     const data = await res.json();
     setProdutoEditando(data);
   };

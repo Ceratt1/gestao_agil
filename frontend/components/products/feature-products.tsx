@@ -19,7 +19,8 @@ export default function FeaturedProducts() {
   const handleComprarAgora = async (produtoId: string | number) => {
     setLoadingId(produtoId)
     try {
-      const res = await fetch(`http://localhost:8000/link_pagamento_whatsapp/${produtoId}/`)
+      // Aqui você pode criar outra rota interna se quiser esconder também esse endpoint
+      const res = await fetch(`/api/link_pagamento_whatsapp?produtoId=${produtoId}`)
       const data = await res.json()
       if (data.link) {
         window.open(data.link, "_blank")
@@ -33,7 +34,7 @@ export default function FeaturedProducts() {
   }
 
   useEffect(() => {
-    fetch("http://localhost:8000/listar_ultimos_4produtos/")
+    fetch("/api/produtos")
       .then(res => res.json())
       .then(data => setProducts(data.produtos))
       .catch(() => setProducts([]))
@@ -42,7 +43,6 @@ export default function FeaturedProducts() {
   return (
     <section id="produtos" className="py-24 bg-white">
       <div className="container mx-auto px-4">
-        {/* ... */}
         <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4">
           {products.map((product) => (
             <div
