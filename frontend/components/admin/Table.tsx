@@ -1,12 +1,8 @@
-type ProdutoAPI = {
-  id: number;
-  titulo: string;
-  valor: string;
-  categoria?: string;
-  url_editar: string;
-  url_excluir: string;
-  // outros campos se quiser
-};
+import { Categoria } from "@/@types/Categoria.enum"
+import { Produtos } from "@/@types/Produtos"
+import { Button } from "../ui/button"
+import { Pencil, Trash } from "lucide-react"
+import { ProdutoAPI } from "@/@types/ProdutoAPI"
 
 type TableProps = {
   produtos: ProdutoAPI[];
@@ -35,8 +31,7 @@ export default function Table({ produtos, onEditar, onExcluir }: TableProps) {
               <td className="px-4 py-2">{Number(emp.valor).toFixed(2)}</td>
               <td className="px-4 py-2">{emp.categoria || "-"}</td>
               <td className="px-4 py-2 flex gap-2">
-                <a
-                  href="#"
+                <Button
                   onClick={e => {
                     e.preventDefault();
                     onEditar(emp.id);
@@ -44,9 +39,8 @@ export default function Table({ produtos, onEditar, onExcluir }: TableProps) {
                   className="text-blue-600 hover:underline cursor-pointer"
                 >
                   Editar
-                </a>
-                 <a
-                  href="#"
+                </Button>
+                 <Button
                   onClick={e => {
                     e.preventDefault();
                     onExcluir(emp.id);
@@ -54,7 +48,7 @@ export default function Table({ produtos, onEditar, onExcluir }: TableProps) {
                   className="text-red-600 hover:underline cursor-pointer bg-transparent border-none p-0"
                 >
                   Excluir
-                </a>
+                </Button>
               </td>
             </tr>
           ))}
@@ -62,4 +56,5 @@ export default function Table({ produtos, onEditar, onExcluir }: TableProps) {
       </table>
     </div>
   );
+
 }

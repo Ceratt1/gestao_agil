@@ -1,17 +1,8 @@
 import { useEffect, useState } from "react";
 import Table from "./Table";
 import AdminProductForm from "./AdminProductForm";
+import { ProdutoAPI } from "@/@types/ProdutoAPI";
 
-type ProdutoAPI = {
-  id: number;
-  titulo: string;
-  valor: string;
-  descricao?: string;
-  caminho_imagem?: string;
-  categoria?: string;
-  url_editar?: string;
-  url_excluir?: string;
-};
 
 export default function AdminContent() {
   const [produtos, setProdutos] = useState<ProdutoAPI[]>([]);
