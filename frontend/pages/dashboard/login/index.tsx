@@ -11,8 +11,8 @@ export default function Login() {
     e.preventDefault();
     setMensagem("");
 
-    // Agora faz o login pela rota interna do Next.js
-    const loginResponse = await fetch("/api/login", {
+    // Chama o backend Django diretamente
+    const loginResponse = await fetch("http://localhost:8000/api-token-auth/", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username: usuario, password: senha }),
@@ -26,6 +26,7 @@ export default function Login() {
       localStorage.setItem("username", usuario);
       localStorage.setItem("is_staff", tokenData.is_staff ? "true" : "false");
       localStorage.setItem("is_superuser", tokenData.is_superuser ? "true" : "false");
+      localStorage.setItem("user", JSON.stringify(tokenData));
       window.location.href = "/";
     } else {
       setMensagem(tokenData.error || "Usuário ou senha inválidos.");

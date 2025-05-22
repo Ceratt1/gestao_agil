@@ -1,11 +1,16 @@
+import TableLoja from "@/components/admin/TableLoja";
 import AdminNavs from "@/components/admin/AdminNavs";
+import DashboardGuard from "@/components/admin/DashboardGuard";
 
-
-
-export default function Admin() {
-    return (
+export default function Dashboard() {
+  return (
+    <DashboardGuard>
       <AdminNavs page="Dashboard">
-        <h1 className="text-black">conteúdo aqui</h1>
+        <main>
+          {/* ...restante do seu código... */}
+          <TableLoja />
+        </main>
       </AdminNavs>
-    )
+    </DashboardGuard>
+  );
 }

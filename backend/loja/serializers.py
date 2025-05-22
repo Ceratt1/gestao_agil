@@ -10,4 +10,13 @@ class UsuarioSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Usuario
-        fields = ['uuid', 'username', 'email', 'is_superuser', 'contato_whatsapp']
+        fields = ['id', 'username', 'email', 'is_superuser', 'regra']
+
+
+from rest_framework import serializers
+from .models import Loja
+
+class LojaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Loja
+        fields = '__all__'

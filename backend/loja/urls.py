@@ -1,7 +1,7 @@
 from django.urls import path, include
 from . import views
 from rest_framework.routers import DefaultRouter
-from .views import ProdutoViewSet, UsuarioViewSet, link_pagamento_whatsapp, CustomAuthToken, listar_ultimos_4produtos, listar_todos_produtos_publico
+from .views import ProdutoViewSet, UsuarioViewSet, link_pagamento_whatsapp, CustomAuthToken, listar_ultimos_4produtos, listar_todos_produtos_publico, loja_view, listar_usuarios
 from rest_framework.authtoken.views import obtain_auth_token
 from .views import UsuarioSchemaView, ProdutoSchemaView
 
@@ -30,6 +30,10 @@ urlpatterns = [
     path('listar_ultimos_4produtos/', views.listar_ultimos_4produtos, name='listar_ultimos_4produtos'),
     path('listar_todos_produtos_publico/', views.listar_todos_produtos_publico, name='listar_todos_produtos_publico'),
     path('link_pagamento_whatsapp/<uuid:produto_id>/', link_pagamento_whatsapp, name='link_pagamento_whatsapp'),
+    path('loja/', loja_view, name='loja-view'),
+    path('listar_usuarios/', views.listar_usuarios, name='listar_usuarios'),
+    
+
    
 
 

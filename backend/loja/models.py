@@ -37,7 +37,24 @@ class Usuario(AbstractUser):
         REGULAR = 'REGULAR', 'Regular'
 
     regra = models.CharField(max_length=10, choices=Regra.choices, default=Regra.REGULAR)
-    contato_whatsapp = models.CharField(max_length=20, blank=True)
 
     def __str__(self):
         return self.email
+    
+
+class Loja(models.Model):
+    nome = models.CharField(max_length=255)
+    descricao = models.TextField(blank=True)
+    whatsapp = models.CharField(max_length=20, help_text="Somente números, com DDD. Ex: 51999999999")
+    email = models.EmailField(blank=True)
+    telefone = models.CharField(max_length=20, blank=True)
+    endereco = models.CharField(max_length=255, blank=True)
+    cidade = models.CharField(max_length=100, blank=True)
+    estado = models.CharField(max_length=50, blank=True)
+    cep = models.CharField(max_length=20, blank=True)
+    horario_funcionamento = models.CharField(max_length=255, blank=True)
+    instagram = models.URLField(blank=True)
+    facebook = models.URLField(blank=True)
+
+    def __str__(self):
+        return self.nome

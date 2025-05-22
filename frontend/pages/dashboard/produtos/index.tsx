@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from "react";
-
 import AdminNavs from "@/components/admin/AdminNavs";
 import Table from "@/components/admin/Table";
 import AdminProductForm from "@/components/admin/AdminProductForm";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
+import DashboardGuard from "@/components/admin/DashboardGuard"; // <-- importe o guard
 
 type ProdutoAPI = {
   id: number;
@@ -38,21 +38,17 @@ export default function AdminContent() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Buscar produtos do backend (agora via API interna correta)
   const fetchProdutos = () => {
     setLoading(true);
     fetch("/api/produtos_lista")
       .then(res => res.json())
       .then(data => {
-        console.log(data)
         setProdutos(data.produtos);
         setLoading(false);
       })
       .catch(() => setLoading(false));
   };
 
-
-  // Função chamada ao clicar em "Editar" (agora via API interna)
   const handleEditar = (id: number) => {
     const produto = produtos.find(p => p.id === id);
     if (produto) {
@@ -60,42 +56,39 @@ export default function AdminContent() {
     }
   };
 
-  // Close popover when clicking outside
-
   const handleExcluir = async (id: number) => {
     if (!window.confirm("Tem certeza que deseja excluir este produto?")) return;
     await fetch(`/api/produtos?id=${id}`, { method: "DELETE" });
     fetchProdutos();
   };
-  // Fechar o formulário/modal de edição
+
   const fecharEdicao = () => setProdutoEditando(null);
 
   return (
-    <AdminNavs page="Produtos">
-      <main>
-      <div className="md:mx-0 md:my-4 lg:m-4">
-          <div className="flex justify-between items-center text-black p-4 bg-white m-px rounded-t-lg">
-            <p className="text-2xl font-light tracking-tight text-black">Tabela de produtos</p>
-            <Button onClick={() => setProdutoEditando({
-                id: 0,
-                titulo: "",
-                valor: "",
-                descricao: "",
-                caminho_imagem: "",
-                categoria: "",
-              })} className="rounded-full bg-orange-400 text-white hover:bg-orange-300 cursor-pointer"><Plus /></Button>
+    <DashboardGuard>
+      <AdminNavs page="Produtos">
+        <main>
+          <div className="md:mx-0 md:my-4 lg:m-4">
+            <div className="flex justify-between items-center text-black p-4 bg-white m-px rounded-t-lg">
+              <p className="text-2xl font-light tracking-tight text-black">Tabela de produtos</p>
+              <Button onClick={() => setProdutoEditando({
+                  id: 0,
+                  titulo: "",
+                  valor: "",
+                  descricao: "",
+                  caminho_imagem: "",
+                  categoria: "",
+                })} className="rounded-full bg-orange-400 text-white hover:bg-orange-300 cursor-pointer"><Plus /></Button>
+            </div>
+            <div className="p-4 rounded-b-lg  bg-white  ">
+              {loading ? (
+                <div className="text-center mt-6">Carregando...</div>
+              ) : (
+                <Table produtos={produtos} onEditar={handleEditar} onExcluir={handleExcluir}/>
+              )}
+            </div>
           </div>
-          <div className="p-4 rounded-b-lg  bg-white  ">
-            {loading ? (
-              <div className="text-center mt-6">Carregando...</div>
-            ) : (
-              <Table produtos={produtos} onEditar={handleEditar} onExcluir={handleExcluir}/>
-            )}
-          </div>
-        </div>
 
-
-          {/* Formulário de edição em modal */}
           {produtoEditando && (
             <>
               <div className="absolute top-0 left-0 w-full h-full bg-black opacity-30">
@@ -120,7 +113,8 @@ export default function AdminContent() {
               </div>
             </>
           )}
-      </main>
-    </AdminNavs>
+        </main>
+      </AdminNavs>
+    </DashboardGuard>
   );
 }
