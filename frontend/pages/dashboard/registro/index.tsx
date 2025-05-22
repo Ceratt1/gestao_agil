@@ -12,7 +12,6 @@ export default function Registro() {
     e.preventDefault();
     setMensagem("");
 
-    // Agora faz o registro pela rota interna do Next.js
     const response = await fetch("/api/registro", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -31,36 +30,52 @@ export default function Registro() {
   };
 
   return (
-    <div className="flex justify-center items-center h-140">
-      <form onSubmit={handleSubmit} className="flex flex-col gap-6 max-w-lg items-stretch content-center">
-        <p className="text-center md:text-left text-lg text-gray-300 md:text-xl max-w-2xl">
-          Registro
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-orange-100 via-white to-orange-200">
+      <form
+        onSubmit={handleSubmit}
+        className="bg-white shadow-xl rounded-2xl px-10 py-10 flex flex-col gap-6 w-full max-w-md border border-orange-200"
+      >
+        <h1 className="text-3xl font-bold text-center text-orange-500 mb-2">Registro</h1>
+        <p className="text-center text-gray-500 mb-4">
+          Crie sua conta preenchendo os campos abaixo.
         </p>
         <Input
           type="text"
-          className="bg-white text-black"
+          className="bg-gray-100 text-black"
           placeholder="Usuário"
           value={usuario}
           onChange={e => setUsuario(e.target.value)}
+          autoFocus
         />
         <Input
           type="email"
-          className="bg-white text-black"
+          className="bg-gray-100 text-black"
           placeholder="Email"
           value={email}
           onChange={e => setEmail(e.target.value)}
         />
         <Input
           type="password"
-          className="bg-white text-black"
+          className="bg-gray-100 text-black"
           placeholder="Senha"
           value={senha}
           onChange={e => setSenha(e.target.value)}
         />
-        <Button className="group bg-white text-black hover:bg-gray-200 rounded-full px-8 cursor-pointer" size="lg">
+        <Button
+          className="rounded-full bg-orange-500 text-white hover:bg-orange-400 px-8 py-2 text-lg font-semibold transition"
+          size="lg"
+        >
           Registrar
         </Button>
-        {mensagem && <span className="text-center text-red-500">{mensagem}</span>}
+        {mensagem && (
+          <span
+            className={`text-center text-sm ${
+              mensagem.includes("sucesso") ? "text-green-600" : "text-red-500"
+            }`}
+          >
+            {mensagem}
+          </span>
+        )}
       </form>
     </div>
   );
