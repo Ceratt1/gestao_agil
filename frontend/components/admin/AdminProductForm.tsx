@@ -19,10 +19,10 @@ export default function AdminProductForm({produto, onSubmit}: ProductFormProps) 
         const form = e.currentTarget;
 
         const payload = {
-            nome: (form.elements.namedItem('nome') as HTMLInputElement)?.value || '',
-            descricao: (form.elements.namedItem('descricao') as HTMLInputElement)?.innerText || '',
-            preco: (form.elements.namedItem('preco') as HTMLInputElement)?.value || '',
-            imagem: (form.elements.namedItem('imagem') as HTMLInputElement)?.value || '',
+            titulo: (form.elements.namedItem('nome') as HTMLInputElement)?.value || '',
+            descricao: (form.elements.namedItem('descricao') as HTMLInputElement)?.value || '',
+            valor: (form.elements.namedItem('preco') as HTMLInputElement)?.value || '',
+            caminho_imagem: (form.elements.namedItem('imagem') as HTMLInputElement)?.value || '',
             categoria: (form.elements.namedItem('categoria') as HTMLSelectElement)?.value || '',
         };
 
@@ -53,6 +53,7 @@ export default function AdminProductForm({produto, onSubmit}: ProductFormProps) 
                     name="nome"
                     className="bg-white w-full text-black border border-gray-300"
                     required
+                    defaultValue={produto.titulo || ""}
                 />
             </div>
 
@@ -64,23 +65,26 @@ export default function AdminProductForm({produto, onSubmit}: ProductFormProps) 
                     className="bg-white w-full text-black border border-gray-300"
                     step="0.01"
                     required
+                    defaultValue={produto.valor || ""}
                 />
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-1">Descrição</label>
-              <textarea
-                name="descricao"
-                className="bg-white w-full text-black border border-gray-300"
-              />
+                <label className="block text-sm font-semibold text-gray-700 mb-1">Descrição</label>
+                <textarea
+                    name="descricao"
+                    className="bg-white w-full text-black border border-gray-300"
+                    defaultValue={produto.descricao || ""}
+                />
             </div>
 
             <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1">Imagem</label>
+                <label className="block text-sm font-semibold text-gray-700 mb-1">Imagem (URL ou caminho)</label>
                 <Input
-                    type="file"
+                    type="text"
                     name="imagem"
                     className="bg-white w-full text-black border border-gray-300"
+                    defaultValue={produto.caminho_imagem || ""}
                 />
             </div>
 
@@ -90,11 +94,12 @@ export default function AdminProductForm({produto, onSubmit}: ProductFormProps) 
                     name="categoria"
                     className="mt-1 block w-full h-10 px-4 py-2 rounded-md border border-gray-300 p-2 focus:ring-2 focus:ring-black focus:outline-none"
                     required
+                    defaultValue={produto.categoria || ""}
                 >
                     <option value="">Selecione uma categoria</option>
-                        {categoriasExemplo.map(cat => (
-                            <option key={cat} value={cat}>{cat}</option>
-                        ))}
+                    {categoriasExemplo.map(cat => (
+                        <option key={cat} value={cat}>{cat}</option>
+                    ))}
                 </select>
             </div>
 
