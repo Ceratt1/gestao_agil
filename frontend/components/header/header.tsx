@@ -100,7 +100,7 @@ export default function Header() {
           </Link>
           {isAdmin && (
             <Link
-              href="/dashboard/admin"
+              href="/dashboard"
               className="text-sm font-bold text-orange-500 hover:text-orange-700 transition-colors"
             >
               Admin
@@ -186,7 +186,7 @@ export default function Header() {
             </Link>
             {isAdmin && (
               <Link
-                href="/dashboard/admin"
+                href="/dashboard"
                 className="text-sm font-bold text-orange-500 hover:text-orange-700 py-2 border-b border-gray-100"
                 onClick={() => setIsMenuOpen(false)}
               >
