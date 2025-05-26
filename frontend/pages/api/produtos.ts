@@ -1,11 +1,12 @@
 import type { NextApiRequest, NextApiResponse } from "next";
+import { fetchAuth } from "@/utils/fetchAuth";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const { id } = req.query;
   const baseUrl = "http://localhost:8000/api/produtos/";
 
   if (req.method === "GET") {
-    // Últimos 4 produtos (seu uso atual)
+    // Últimos 4 produtos (público)
     const response = await fetch("http://localhost:8000/listar_ultimos_4produtos/");
     const data = await response.json();
     return res.status(200).json(data);
@@ -13,9 +14,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   if (req.method === "PUT") {
     if (!id) return res.status(400).json({ error: "ID não informado" });
-    const response = await fetch(`${baseUrl}${id}/`, {
+    const response = await fetchAuth(`${baseUrl}${id}/`, {
       method: "PUT",
-      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(req.body),
     });
     const data = await response.json();
@@ -23,9 +23,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   if (req.method === "POST") {
-    const response = await fetch(baseUrl, {
+    const response = await fetchAuth(baseUrl, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(req.body),
     });
     const data = await response.json();
@@ -34,10 +33,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   if (req.method === "DELETE") {
     if (!id) return res.status(400).json({ error: "ID não informado" });
-    const response = await fetch(`${baseUrl}${id}/`, {
+    const response = await fetchAuth(`${baseUrl}${id}/`, {
       method: "DELETE",
     });
-    // O DRF geralmente retorna 204 No Content para delete
     if (response.status === 204) {
       return res.status(204).end();
     }

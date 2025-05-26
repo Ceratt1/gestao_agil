@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-from django.db import models
 import uuid
+
 class Produto(models.Model):
     class Categoria(models.TextChoices):
         BOLSO = 'Bolso', 'Bolso'
@@ -19,7 +19,6 @@ class Produto(models.Model):
     id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True, primary_key=True)
     titulo = models.CharField(max_length=255)
     descricao = models.TextField()
-    caminho_imagem = models.CharField(max_length=512)
     valor = models.DecimalField(max_digits=10, decimal_places=2)
     categoria = models.CharField(
         max_length=20,
@@ -40,7 +39,6 @@ class Usuario(AbstractUser):
 
     def __str__(self):
         return self.email
-    
 
 class Loja(models.Model):
     nome = models.CharField(max_length=255)
@@ -58,3 +56,12 @@ class Loja(models.Model):
 
     def __str__(self):
         return self.nome
+
+class ImagemProduto(models.Model):
+    id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True, primary_key=True)
+    produto = models.ForeignKey(Produto, related_name='imagens', on_delete=models.CASCADE)
+    imagem = models.CharField(max_length=512)  # ou models.ImageField(upload_to='produtos/') se usar upload real
+    descricao = models.CharField(max_length=255, blank=True)
+
+    def __str__(self):
+        return f"Imagem de {self.produto.titulo}"

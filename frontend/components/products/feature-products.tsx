@@ -7,19 +7,38 @@ type ProdutoAPI = {
   titulo: string
   descricao: string
   valor: string
-  caminho_imagem: string
+  imagens?: { id: string | number; imagem: string }[] // Suporta múltiplas imagens
+  imagem?: string // Suporte legado/caso venha só uma imagem
 }
 
 export default function FeaturedProducts() {
   const [products, setProducts] = useState<ProdutoAPI[]>([])
   const [hoveredId, setHoveredId] = useState<string | number | null>(null)
   const [loadingId, setLoadingId] = useState<string | number | null>(null)
+  const [carouselIndexes, setCarouselIndexes] = useState<{ [key: string]: number }>({})
+
+  // Carrossel automático
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCarouselIndexes(prev => {
+        const updated: typeof prev = { ...prev }
+        products.forEach(product => {
+          const imagensLength = product.imagens?.length || 0
+          if (imagensLength > 1) {
+            const current = prev[product.id] || 0
+            updated[product.id] = (current + 1) % imagensLength
+          }
+        })
+        return updated
+      })
+    }, 3000)
+    return () => clearInterval(interval)
+  }, [products])
 
   // Função para buscar o link do WhatsApp do backend e redirecionar
   const handleComprarAgora = async (produtoId: string | number) => {
     setLoadingId(produtoId)
     try {
-      // Aqui você pode criar outra rota interna se quiser esconder também esse endpoint
       const res = await fetch(`/api/link_pagamento_whatsapp?produtoId=${produtoId}`)
       const data = await res.json()
       if (data.link) {
@@ -54,11 +73,45 @@ export default function FeaturedProducts() {
               onMouseLeave={() => setHoveredId(null)}
             >
               <div className="relative aspect-square overflow-hidden">
-                <img
-                  src={product.caminho_imagem || "/placeholder.svg"}
-                  alt={product.titulo}
-                  className="object-cover transition-transform duration-700 group-hover:scale-110 mx-auto"
-                />
+                {/* Carrossel de imagens com bolinhas e transição suave */}
+                <div className="relative w-full h-full flex items-center justify-center">
+                  {product.imagens && product.imagens.length > 0 ? (
+                    <>
+                      {product.imagens.map((img, idx) => (
+                        <img
+                          key={img.id}
+                          src={img.imagem}
+                          alt={product.titulo}
+                          className={`object-cover transition-opacity duration-700 absolute inset-0 w-full h-full mx-auto ${
+                            idx === (carouselIndexes[product.id] || 0) ? "opacity-100 z-10" : "opacity-0 z-0"
+                          }`}
+                          style={{ pointerEvents: idx === (carouselIndexes[product.id] || 0) ? "auto" : "none" }}
+                        />
+                      ))}
+                      {/* Bolinhas */}
+                      <div className="absolute bottom-3 left-0 right-0 flex justify-center gap-2 z-20">
+                        {product.imagens.map((img, idx) => (
+                          <button
+                            key={img.id}
+                            className={`w-3 h-3 rounded-full ${idx === (carouselIndexes[product.id] || 0) ? "bg-black" : "bg-gray-300"} border border-white`}
+                            style={{ outline: "none" }}
+                            onClick={() =>
+                              setCarouselIndexes(prev => ({ ...prev, [product.id]: idx }))
+                            }
+                            aria-label={`Selecionar imagem ${idx + 1}`}
+                            tabIndex={0}
+                          />
+                        ))}
+                      </div>
+                    </>
+                  ) : (
+                    <img
+                      src={product.imagem || "/placeholder.svg"}
+                      alt={product.titulo}
+                      className="object-cover transition-transform duration-700 group-hover:scale-110 mx-auto w-full h-full"
+                    />
+                  )}
+                </div>
 
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 

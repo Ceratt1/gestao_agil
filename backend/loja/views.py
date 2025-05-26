@@ -1,27 +1,31 @@
 from django.http import JsonResponse
 from django.contrib.auth import authenticate, login, logout
 from django.views.decorators.csrf import csrf_exempt
-from .models import Produto, Loja
+from .models import Produto, Loja, ImagemProduto
 from drf_yasg.utils import swagger_auto_schema
 from .serializers import ProdutoSerializer, UsuarioSerializer, LojaSerializer
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.decorators import api_view, action
+from rest_framework.decorators import (
+    api_view, action, permission_classes, authentication_classes, parser_classes
+)
 from rest_framework import status
 from django.db.models import Q
 import json
 from rest_framework.permissions import IsAuthenticated, BasePermission, SAFE_METHODS
+from rest_framework.authentication import TokenAuthentication
 from django.contrib.auth import get_user_model
 from urllib.parse import quote
 from django.urls import reverse
 User = get_user_model()
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
+from rest_framework.parsers import MultiPartParser, FormParser
+from django.conf import settings  
+import os  
 
-# =========================
-# SWAGGER SCHEMAS
-# =========================
+# ================ SWAGGER SCHEMAS =========================
 
 class UsuarioSchemaView(APIView):
     @swagger_auto_schema(responses={200: UsuarioSerializer})
@@ -35,9 +39,7 @@ class ProdutoSchemaView(APIView):
         """Endpoint só para mostrar o schema do Produto no Swagger"""
         return Response({})
 
-# =========================
-# AUTENTICAÇÃO E USUÁRIO
-# =========================
+# ========================= AUTENTICAÇÃO E USUÁRIO =========================
 
 class CustomAuthToken(ObtainAuthToken):
     def post(self, request, *args, **kwargs):
@@ -102,9 +104,7 @@ def logout_view(request):
         return JsonResponse({'success': 'Logout realizado com sucesso!'})
     return JsonResponse({'error': 'Método não permitido.'}, status=405)
 
-# =========================
-# PERMISSÃO CUSTOMIZADA
-# =========================
+# ========================= PERMISSÃO CUSTOMIZADA =========================
 
 class IsAdminOrStaffOrRegraAdmin(BasePermission):
     """
@@ -117,16 +117,27 @@ class IsAdminOrStaffOrRegraAdmin(BasePermission):
             (user.is_staff or getattr(user, 'regra', None) == 'ADMIN')
         )
 
-# =========================
-# USUÁRIO VIEWSET
-# =========================
+class IsAdminOrStaffOrReadOnly(BasePermission):
+    """
+    Permite apenas leitura para todos.
+    Só permite POST, PUT, PATCH, DELETE para staff ou admin (regra='ADMIN').
+    """
+    def has_permission(self, request, view):
+        if request.method in SAFE_METHODS:
+            return True
+        user = request.user
+        return (
+            user and user.is_authenticated and
+            (user.is_staff or getattr(user, 'regra', None) == 'ADMIN')
+        )
+
+# ========================= USUÁRIO VIEWSET =========================
 
 class UsuarioViewSet(ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UsuarioSerializer
 
-
-    @action(detail=False, methods=['get'])
+    @action(detail=False, methods=['get'], permission_classes=[IsAuthenticated])
     def me(self, request):
         """Retorna dados do usuário autenticado."""
         user = request.user
@@ -140,7 +151,7 @@ class UsuarioViewSet(ModelViewSet):
             'contato_whatsapp': getattr(user, 'contato_whatsapp', None),
         })
 
-    @action(detail=False, methods=['put'])
+    @action(detail=False, methods=['put'], permission_classes=[IsAuthenticated])
     def atualizar_perfil(self, request):
         """Atualiza perfil do usuário autenticado."""
         user = request.user
@@ -151,7 +162,7 @@ class UsuarioViewSet(ModelViewSet):
         user.save()
         return Response({'success': 'Perfil atualizado com sucesso!'})
 
-    @action(detail=False, methods=['post'])
+    @action(detail=False, methods=['post'], permission_classes=[IsAuthenticated])
     def alterar_senha(self, request):
         """Altera senha do usuário autenticado."""
         user = request.user
@@ -163,7 +174,7 @@ class UsuarioViewSet(ModelViewSet):
         user.save()
         return Response({'success': 'Senha alterada com sucesso!'})
 
-    @action(detail=False, methods=['delete'])
+    @action(detail=False, methods=['delete'], permission_classes=[IsAuthenticated])
     def deletar_conta(self, request):
         """Deleta a conta do usuário autenticado."""
         user = request.user
@@ -174,7 +185,7 @@ class UsuarioViewSet(ModelViewSet):
     @action(
         detail=False,
         methods=['get'],
-     
+        permission_classes=[IsAdminOrStaffOrRegraAdmin]
     )
     def listar_todos(self, request):
         """Lista todos os usuários (apenas admin/staff/regra ADMIN)."""
@@ -196,7 +207,7 @@ class UsuarioViewSet(ModelViewSet):
     @action(
         detail=True,
         methods=['delete'],
-       
+        permission_classes=[IsAdminOrStaffOrRegraAdmin]
     )
     def deletar_usuario(self, request, pk=None):
         """Deleta um usuário pelo ID (apenas admin/staff/regra ADMIN)."""
@@ -210,24 +221,25 @@ class UsuarioViewSet(ModelViewSet):
     @action(
         detail=True,
         methods=['put'],
+        permission_classes=[IsAdminOrStaffOrRegraAdmin]
     )
     def atualizar_usuario(self, request, pk=None):
         """Atualiza um usuário pelo ID."""
         try:
             user = User.objects.get(pk=pk)
         except User.DoesNotExist:
-            return Response({'error': 'Erro ao atualizar', 'detalhes': serializer.errors}, status=400)
+            return Response({'error': 'Erro ao atualizar'}, status=400)
         serializer = UsuarioSerializer(user, data=request.data, partial=True)  # partial=True permite atualização parcial
         if serializer.is_valid():
             serializer.save()
             return Response({'success': 'Usuário atualizado com sucesso!'})
         return Response(serializer.errors, status=400)
 
-# =========================
-# LISTAR USUÁRIOS (API Simples)
-# =========================
+# ========================= LISTAR USUÁRIOS (API Simples) =========================
 
 @api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAdminOrStaffOrRegraAdmin])
 def listar_usuarios(request):
     """
     GET /listar_usuarios/
@@ -251,28 +263,12 @@ def listar_usuarios(request):
     ]
     return Response({'usuarios': data}, status=status.HTTP_200_OK)
 
-# =========================
-# PRODUTOS
-# =========================
-
-class IsAdminOrStaffOrReadOnly(BasePermission):
-    """
-    Permite apenas leitura para todos.
-    Só permite POST, PUT, PATCH, DELETE para staff ou admin (regra='ADMIN').
-    """
-    def has_permission(self, request, view):
-        if request.method in SAFE_METHODS:
-            return True
-        user = request.user
-        return (
-            user and user.is_authenticated and
-            (user.is_staff or getattr(user, 'regra', None) == 'ADMIN')
-        )
+# ========================= PRODUTOS =========================
 
 class ProdutoViewSet(ModelViewSet):
     queryset = Produto.objects.all().order_by('-id')
     serializer_class = ProdutoSerializer
-
+    permission_classes = [IsAdminOrStaffOrReadOnly]
 
 def search_products(request):
     """
@@ -318,31 +314,105 @@ def get_produto(request, id):
     except Produto.DoesNotExist:
         return Response({'error': 'Produto não encontrado'}, status=404)
 
-@api_view(['GET'])
+@api_view(['GET', 'POST', 'PUT', 'DELETE'])
+@permission_classes([IsAdminOrStaffOrRegraAdmin])
 def listar_produtos(request):
     """
-    GET /listar_produtos/
-    Lista todos os produtos com URLs de edição/exclusão.
+    GET /listar_produtos/           -> Lista todos os produtos
+    GET /listar_produtos/?id=...    -> Detalhe de um produto
+    POST /listar_produtos/          -> Cria novo produto
+    PUT /listar_produtos/?id=...    -> Atualiza produto pelo ID
+    DELETE /listar_produtos/?id=... -> Deleta produto pelo ID
     """
-    produtos = Produto.objects.all().order_by('-id')
-    data = [
-        {
-            'id': produto.id,
-            'titulo': produto.titulo,
-            'descricao': produto.descricao,
-            'valor': str(produto.valor),
-            'caminho_imagem': produto.caminho_imagem,
-            'categoria': produto.categoria, 
-            'url_editar': request.build_absolute_uri(
-                reverse('produto-detail', args=[produto.id])
-            ),
-            'url_excluir': request.build_absolute_uri(
-                reverse('produto-detail', args=[produto.id])
-            ),
-        }
-        for produto in produtos
-    ]
-    return Response({'produtos': data}, status=status.HTTP_200_OK)
+    produto_id = request.query_params.get('id')
+
+    if request.method == 'GET':
+        if produto_id:
+            try:
+                produto = Produto.objects.get(id=produto_id)
+            except Produto.DoesNotExist:
+                return Response({'error': 'Produto não encontrado.'}, status=404)
+            imagens = [
+                {
+                    'id': img.id,
+                    'imagem': (
+                        request.build_absolute_uri(img.imagem.url)
+                        if hasattr(img.imagem, 'url')
+                        else request.build_absolute_uri(f"/media/{img.imagem.lstrip('/')}")
+                    ),
+                    'descricao': getattr(img, 'descricao', ''),
+                }
+                for img in produto.imagens.all()
+            ]
+            data = {
+                'id': produto.id,
+                'titulo': produto.titulo,
+                'descricao': produto.descricao,
+                'valor': str(produto.valor),
+                'categoria': produto.categoria,
+                'imagens': imagens,
+                'url_editar': request.build_absolute_uri(
+                    reverse('produto-detail', args=[produto.id])
+                ),
+                'url_excluir': request.build_absolute_uri(
+                    reverse('produto-detail', args=[produto.id])
+                ),
+            }
+            return Response(data, status=status.HTTP_200_OK)
+        else:
+            produtos = Produto.objects.all().order_by('-id')
+            data = []
+            for produto in produtos:
+                imagens = [
+                    {
+                        'id': img.id,
+                        'imagem': request.build_absolute_uri(img.imagem.url if hasattr(img.imagem, 'url') else img.imagem),
+                        'descricao': getattr(img, 'descricao', ''),
+                    }
+                    for img in produto.imagens.all()
+                ]
+                data.append({
+                    'id': produto.id,
+                    'titulo': produto.titulo,
+                    'descricao': produto.descricao,
+                    'valor': str(produto.valor),
+                    'categoria': produto.categoria,
+                    'imagens': imagens,
+                    'url_editar': request.build_absolute_uri(
+                        reverse('produto-detail', args=[produto.id])
+                    ),
+                    'url_excluir': request.build_absolute_uri(
+                        reverse('produto-detail', args=[produto.id])
+                    ),
+                })
+            return Response({'produtos': data}, status=status.HTTP_200_OK)
+
+    if request.method == 'POST':
+        serializer = ProdutoSerializer(data=request.data)
+        if serializer.is_valid():
+            produto = serializer.save()
+            return Response({'success': 'Produto criado com sucesso!', 'id': produto.id}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=400)
+
+    produto_id = request.query_params.get('id')
+    if not produto_id:
+        return Response({'error': 'ID do produto não informado.'}, status=400)
+
+    try:
+        produto = Produto.objects.get(id=produto_id)
+    except Produto.DoesNotExist:
+        return Response({'error': 'Produto não encontrado.'}, status=404)
+
+    if request.method == 'PUT':
+        serializer = ProdutoSerializer(produto, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'success': 'Produto atualizado com sucesso!'})
+        return Response(serializer.errors, status=400)
+
+    if request.method == 'DELETE':
+        produto.delete()
+        return Response({'success': 'Produto deletado com sucesso!'})
 
 @api_view(['GET'])
 def listar_todos_produtos_publico(request):
@@ -351,17 +421,31 @@ def listar_todos_produtos_publico(request):
     Lista todos os produtos do mais recente para o mais antigo (dados públicos).
     """
     produtos = Produto.objects.all().order_by('-id')
-    data = [
-        {
+    data = []
+    for produto in produtos:
+        imagens = [
+            {
+                'id': img.id,
+                'imagem': (
+                    request.build_absolute_uri(img.imagem.url)
+                    if hasattr(img.imagem, 'url')
+                    else request.build_absolute_uri(f"/media/{img.imagem.lstrip('/')}")
+                ),
+                'descricao': getattr(img, 'descricao', ''),
+            }
+            for img in produto.imagens.all()
+        ]
+        # Adiciona campo imagem principal (primeira imagem)
+        imagem_principal = imagens[0]['imagem'] if imagens else None
+        data.append({
             'id': produto.id,
             'titulo': produto.titulo,
             'descricao': produto.descricao,
             'valor': str(produto.valor),
-            'caminho_imagem': produto.caminho_imagem,
             'categoria': produto.categoria,
-        }
-        for produto in produtos
-    ]
+            'imagens': imagens,
+            'imagem': imagem_principal,  # <-- aqui!
+        })
     return Response({'produtos': data}, status=status.HTTP_200_OK)
 
 @api_view(['GET'])
@@ -371,22 +455,33 @@ def listar_ultimos_4produtos(request):
     Lista os 4 produtos mais recentes (dados públicos).
     """
     produtos = Produto.objects.all().order_by('-id')[:4]
-    data = [
-        {
+    data = []
+    for produto in produtos:
+        imagens = [
+            {
+                'id': img.id,
+                'imagem': (
+                    request.build_absolute_uri(img.imagem.url)
+                    if hasattr(img.imagem, 'url')
+                    else request.build_absolute_uri(f"/media/{img.imagem.lstrip('/')}")
+                ),
+                'descricao': getattr(img, 'descricao', ''),
+            }
+            for img in produto.imagens.all()
+        ]
+        imagem_principal = imagens[0]['imagem'] if imagens else None
+        data.append({
             'id': produto.id,
             'titulo': produto.titulo,
             'descricao': produto.descricao,
             'valor': str(produto.valor),
-            'caminho_imagem': produto.caminho_imagem,
-            'categoria': produto.categoria, 
-        }
-        for produto in produtos
-    ]
+            'categoria': produto.categoria,
+            'imagens': imagens,           # <-- todas as imagens para o carrossel
+            'imagem': imagem_principal,   # <-- mantém para compatibilidade
+        })
     return Response({'produtos': data}, status=status.HTTP_200_OK)
 
-# =========================
-# INTEGRAÇÕES E OUTROS
-# =========================
+# ========================= INTEGRAÇÕES E OUTROS =========================
 
 @api_view(['GET'])
 def link_pagamento_whatsapp(request, produto_id):
@@ -405,6 +500,8 @@ def link_pagamento_whatsapp(request, produto_id):
         return Response({'error': 'Produto não encontrado.'}, status=404)
 
 @api_view(['GET', 'PUT', 'PATCH'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAdminOrStaffOrRegraAdmin])
 def loja_view(request):
     """
     GET: Retorna os dados da loja (primeira linha).
@@ -424,3 +521,114 @@ def loja_view(request):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['POST'])
+@parser_classes([MultiPartParser, FormParser])
+def upload_imagem_produto(request):
+    produto_id = request.POST.get('produto_id')
+    if not produto_id:
+        return Response({'error': 'produto_id é obrigatório.'}, status=400)
+    try:
+        produto = Produto.objects.get(id=produto_id)
+    except Produto.DoesNotExist:
+        return Response({'error': 'Produto não encontrado.'}, status=404)
+
+    imagens = request.FILES.getlist('imagens')
+    if not imagens:
+        return Response({'error': 'Nenhuma imagem enviada.'}, status=400)
+    if len(imagens) > 5:
+        return Response({'error': 'Máximo de 5 imagens.'}, status=400)
+
+    caminhos = []
+    pasta = os.path.join(settings.MEDIA_ROOT, 'produtos')
+    os.makedirs(pasta, exist_ok=True)
+
+    for img in imagens:
+        caminho = f"produtos/{img.name}"
+        destino = os.path.join(settings.MEDIA_ROOT, "produtos", img.name)
+        with open(destino, 'wb+') as f:
+            for chunk in img.chunks():
+                f.write(chunk)
+        caminhos.append(caminho)
+        ImagemProduto.objects.create(produto=produto, imagem=caminho)
+
+    return Response({'imagens': caminhos}, status=status.HTTP_200_OK)
+
+@api_view(['GET', 'PUT', 'PATCH', 'DELETE'])
+@parser_classes([MultiPartParser, FormParser])
+def imagem_produto_detail(request, imagem_id):
+    """
+    GET: Retorna os dados da imagem.
+    PUT/PATCH: Atualiza a imagem (arquivo) e/ou descrição.
+    DELETE: Remove a imagem do produto.
+    """
+    try:
+        imagem = ImagemProduto.objects.get(id=imagem_id)
+    except ImagemProduto.DoesNotExist:
+        return Response({'error': 'Imagem não encontrada.'}, status=404)
+
+    # GET
+    if request.method == 'GET':
+        data = {
+            'id': imagem.id,
+            'imagem': (
+                request.build_absolute_uri(imagem.imagem.url)
+                if hasattr(imagem.imagem, 'url')
+                else request.build_absolute_uri(f"/media/{imagem.imagem.lstrip('/')}")
+            ),
+            'descricao': getattr(imagem, 'descricao', ''),
+            'produto_id': imagem.produto_id,
+        }
+        return Response(data)
+
+    # PUT/PATCH
+    if request.method in ['PUT', 'PATCH']:
+        nova_imagem = request.FILES.get('imagem')
+        descricao = request.data.get('descricao')
+        alterado = False
+
+        if nova_imagem:
+            if hasattr(imagem.imagem, 'save'):
+                imagem.imagem.save(nova_imagem.name, nova_imagem)
+            else:
+                caminho = os.path.join('produtos', nova_imagem.name).replace("\\", "/")
+                destino = os.path.join(settings.MEDIA_ROOT, caminho)
+                with open(destino, 'wb+') as f:
+                    for chunk in nova_imagem.chunks():
+                        f.write(chunk)
+                imagem.imagem = caminho  # <-- Salva só o caminho relativo!
+            alterado = True
+
+        if descricao is not None:
+            imagem.descricao = descricao
+            alterado = True
+
+        if alterado:
+            imagem.save()
+            return Response({'success': 'Imagem atualizada com sucesso!'})
+        else:
+            return Response({'error': 'Nada para atualizar.'}, status=400)
+
+       # DELETE
+    if request.method == 'DELETE':
+        try:
+            if isinstance(imagem.imagem, str):
+                caminho_relativo = imagem.imagem
+                # Remove domínio se for URL absoluta
+                if caminho_relativo.startswith("http"):
+                    caminho_relativo = "/" + caminho_relativo.split("/media/", 1)[-1]
+                # Remove prefixo '/media/' se existir
+                if caminho_relativo.startswith("/media/"):
+                    caminho_relativo = caminho_relativo[len("/media/"):]
+                caminho_relativo = caminho_relativo.lstrip("/\\")
+                arquivo = os.path.join(settings.MEDIA_ROOT, caminho_relativo)
+                try:
+                    if os.path.exists(arquivo):
+                        os.remove(arquivo)
+                except Exception as file_err:
+                    print(f"Erro ao remover arquivo físico: {file_err}")
+            imagem.delete()
+            return Response({'success': 'Imagem deletada com sucesso!'})
+        except Exception as e:
+            print(f"Erro ao deletar imagem do banco: {e}")
+            return Response({'error': f'Erro ao deletar imagem: {str(e)}'}, status=500)

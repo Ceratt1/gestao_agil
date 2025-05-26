@@ -27,17 +27,19 @@ export default function CatalogoHome() {
   const [showFilters, setShowFilters] = useState(false)
   const [searchTerm, setSearchTerm] = useState("")
   const [hoveredId, setHoveredId] = useState<UUIDTypes | null>(null)
+  // Estado para controlar o índice do carrossel de cada produto
+  const [carouselIndexes, setCarouselIndexes] = useState<{ [key: string]: number }>({})
 
   // Busca produtos do backend ao montar
   useEffect(() => {
     fetch("/api/catalogo")
       .then(res => res.json())
       .then(data => {
-        // Mapeia os campos da API para o seu tipo Produtos
         const produtosApi: Produtos[] = data.produtos.map((p: any) => ({
           uuid: p.id,
           nome: p.titulo,
-          imagemCaminho: p.caminho_imagem || "/placeholder4.jpg",
+          imagens: p.imagens || [],
+          imagemCaminho: (p.imagens && p.imagens.length > 0) ? p.imagens[0].imagem : "/placeholder4.jpg",
           whatsappLink: `https://wa.me/555197274193?text=Tenho%20interesse%20no%20${encodeURIComponent(p.titulo)}`,
           preco: Number(p.valor),
           categoria: p.categoria || Categoria.TODAS,
@@ -45,7 +47,6 @@ export default function CatalogoHome() {
         }))
         setProdutos(produtosApi)
         setFilteredProdutos(produtosApi)
-        // Ajusta faixa de preço inicial
         if (produtosApi.length > 0) {
           const min = Math.min(...produtosApi.map(p => p.preco))
           const max = Math.max(...produtosApi.map(p => p.preco))
@@ -57,6 +58,24 @@ export default function CatalogoHome() {
         setFilteredProdutos([])
       })
   }, [])
+
+  // Carrossel automático
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCarouselIndexes(prev => {
+        const updated: typeof prev = { ...prev }
+        filteredProdutos.forEach(produto => {
+          const imagensLength = produto.imagens?.length || 0
+          if (imagensLength > 1) {
+            const current = prev[produto.uuid] || 0
+            updated[produto.uuid] = (current + 1) % imagensLength
+          }
+        })
+        return updated
+      })
+    }, 3000)
+    return () => clearInterval(interval)
+  }, [filteredProdutos])
 
   // Atualiza filtros
   useEffect(() => {
@@ -79,7 +98,6 @@ export default function CatalogoHome() {
     setFilteredProdutos(result)
   }, [categoriaFiltro, precoRange, searchTerm, produtos])
 
-  // Use as categorias do enum Categoria
   const categorias = Object.values(Categoria)
   const minPreco = produtos.length > 0 ? Math.min(...produtos.map((p) => p.preco)) : 0
   const maxPreco = produtos.length > 0 ? Math.max(...produtos.map((p) => p.preco)) : 4000
@@ -208,16 +226,51 @@ export default function CatalogoHome() {
                 onMouseLeave={() => setHoveredId(null)}
               >
                 <div className="relative aspect-square overflow-hidden">
-                  <div className="absolute top-4 left-4 z-10">
+                  {/* Categoria sempre fixa no topo esquerdo, acima das imagens */}
+                  <div className="absolute top-4 left-4 z-30">
                     <span className="inline-block rounded-full bg-black px-3 py-1 text-xs font-medium text-white">
                       {produto.categoria}
                     </span>
                   </div>
-                  <img
-                    src={produto.imagemCaminho || "/placeholder.svg"}
-                    alt={produto.nome}
-                    className="object-cover transition-transform duration-700 group-hover:scale-110 mx-auto"
-                  />
+                  {/* Carrossel de imagens com bolinhas e transição suave */}
+                  <div className="relative w-full h-full flex items-center justify-center">
+                    {produto.imagens && produto.imagens.length > 0 ? (
+                      <>
+                        {produto.imagens.map((img, idx) => (
+                          <img
+                            key={img.id}
+                            src={img.imagem}
+                            alt={produto.nome}
+                            className={`object-cover transition-opacity duration-700 absolute inset-0 w-full h-full mx-auto ${
+                              idx === (carouselIndexes[produto.uuid] || 0) ? "opacity-100 z-10" : "opacity-0 z-0"
+                            }`}
+                            style={{ pointerEvents: idx === (carouselIndexes[produto.uuid] || 0) ? "auto" : "none" }}
+                          />
+                        ))}
+                        {/* Bolinhas */}
+                        <div className="absolute bottom-3 left-0 right-0 flex justify-center gap-2 z-20">
+                          {produto.imagens.map((img, idx) => (
+                            <button
+                              key={img.id}
+                              className={`w-3 h-3 rounded-full ${idx === (carouselIndexes[produto.uuid] || 0) ? "bg-black" : "bg-gray-300"} border border-white`}
+                              style={{ outline: "none" }}
+                              onClick={() =>
+                                setCarouselIndexes(prev => ({ ...prev, [produto.uuid]: idx }))
+                              }
+                              aria-label={`Selecionar imagem ${idx + 1}`}
+                              tabIndex={0}
+                            />
+                          ))}
+                        </div>
+                      </>
+                    ) : (
+                      <img
+                        src="/placeholder4.jpg"
+                        alt={produto.nome}
+                        className="object-cover transition-transform duration-700 group-hover:scale-110 mx-auto w-full h-full"
+                      />
+                    )}
+                  </div>
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                   <div className="absolute bottom-0 left-0 right-0 p-6 translate-y-full group-hover:translate-y-0 transition-transform duration-500">
                     <a

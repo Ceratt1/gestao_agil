@@ -2,48 +2,44 @@ import type { NextApiRequest, NextApiResponse } from "next";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const id = typeof req.query.id === "string" ? req.query.id : Array.isArray(req.query.id) ? req.query.id[0] : undefined;
-  const auth = req.headers.authorization || "";
+  const method = req.method;
 
   try {
-    // GET: lista todos os usuários
-    if (req.method === "GET") {
-      const response = await fetch("http://localhost:8000/listar_usuarios/");
+    const authHeader = req.headers['authorization'] || req.headers['Authorization'];
+    const fetchOptions: RequestInit = {
+      method,
+      headers: {
+        "Content-Type": "application/json",
+        ...(authHeader ? { Authorization: authHeader as string } : {}),
+      },
+    };
+
+    // GET: lista todos os usuários (protegido)
+    if (method === "GET") {
+      const response = await fetch("http://localhost:8000/listar_usuarios/", fetchOptions);
       const data = await response.json();
       return res.status(response.status).json(data);
     }
 
     // DELETE: deleta usuário pelo id
-    if (req.method === "DELETE") {
+    if (method === "DELETE") {
       if (!id) return res.status(400).json({ error: "ID obrigatório para deletar" });
-      const response = await fetch(`http://localhost:8000/api/usuarios/${id}/deletar_usuario/`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": auth,
-        },
-      });
+      const response = await fetch(`http://localhost:8000/api/usuarios/${id}/deletar_usuario/`, fetchOptions);
       const data = await response.json();
       return res.status(response.status).json(data);
     }
 
     // PUT/PATCH: atualiza usuário pelo id
-    if (req.method === "PUT" || req.method === "PATCH") {
+    if (method === "PUT" || method === "PATCH") {
       if (!id) return res.status(400).json({ error: "ID obrigatório para atualizar" });
 
-      // Garante que o body seja string
       let body = req.body;
       if (typeof body !== "string") {
         body = JSON.stringify(body);
       }
+      fetchOptions.body = body;
 
-      const response = await fetch(`http://localhost:8000/api/usuarios/${id}/atualizar_usuario/`, {
-        method: req.method,
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": auth,
-        },
-        body,
-      });
+      const response = await fetch(`http://localhost:8000/api/usuarios/${id}/atualizar_usuario/`, fetchOptions);
       const data = await response.json();
       return res.status(response.status).json(data);
     }

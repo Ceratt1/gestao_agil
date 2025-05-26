@@ -1,16 +1,13 @@
-import { Categoria } from "@/@types/Categoria.enum"
-import { Produtos } from "@/@types/Produtos"
 import { Button } from "../ui/button"
-import { Pencil, Trash } from "lucide-react"
 import { ProdutoAPI } from "@/@types/ProdutoAPI"
 
 type TableProps = {
-  produtos: ProdutoAPI[];
+  produtos?: ProdutoAPI[]; // agora é opcional
   onEditar: (id: number) => void;
   onExcluir: (id: number) => void;
 };
 
-export default function Table({ produtos, onEditar, onExcluir }: TableProps) {
+export default function Table({ produtos = [], onEditar, onExcluir }: TableProps) {
   return (
     <div className="overflow-x-auto bg-white">
       <table className="min-w-full table-auto border-collapse">
@@ -24,7 +21,7 @@ export default function Table({ produtos, onEditar, onExcluir }: TableProps) {
           </tr>
         </thead>
         <tbody className="text-gray-700">
-          {produtos.map((emp) => (
+          {(produtos || []).map((emp) => (
             <tr key={emp.id} className="hover:bg-gray-100 transition-colors border-b border-gray-200 last:border-none text-left">
               <td className="px-4 py-2">{emp.id}</td>
               <td className="px-4 py-2">{emp.titulo}</td>
@@ -40,7 +37,7 @@ export default function Table({ produtos, onEditar, onExcluir }: TableProps) {
                 >
                   Editar
                 </Button>
-                 <Button
+                <Button
                   onClick={e => {
                     e.preventDefault();
                     onExcluir(emp.id);
@@ -56,5 +53,4 @@ export default function Table({ produtos, onEditar, onExcluir }: TableProps) {
       </table>
     </div>
   );
-
 }

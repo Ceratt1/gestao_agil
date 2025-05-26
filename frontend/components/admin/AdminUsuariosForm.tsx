@@ -1,6 +1,6 @@
 import { Input } from '../ui/input'
 import { Button } from '../ui/button'
-
+import { fetchAuth } from "@/utils/fetchAuth";
 type UsuarioAPI = {
   id: number;
   username: string;
@@ -36,11 +36,8 @@ export default function AdminUsuarioForm({ usuario, onSubmit }: UsuarioFormProps
       ? `/api/usuarios_lista?id=${usuario.id}` // CERTO
       : "/api/registro";
 
-    await fetch(url, {
+    await fetchAuth(url, {
       method,
-      headers: {
-        "Content-Type": "application/json",
-      },
       body: JSON.stringify(payload),
     });
 

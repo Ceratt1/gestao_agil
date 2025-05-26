@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
-import { fetchAuth } from "../../utils/fetchAuth"; // Importa o utilitário
+import { fetchAuth } from "../../utils/fetchAuth";
 
 type LojaAPI = {
   nome: string;
@@ -22,12 +22,17 @@ export default function TableLoja() {
   const [loja, setLoja] = useState<LojaAPI | null>(null);
   const [edit, setEdit] = useState(false);
   const [form, setForm] = useState<Partial<LojaAPI>>({});
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    fetch("/api/loja")
-      .then(res => res.json())
-      .then(data => setLoja(data));
+    setMounted(true);
   }, []);
+
+ useEffect(() => {
+  fetchAuth("/api/loja")
+    .then(res => res.json())
+    .then(data => setLoja(data));
+}, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -47,7 +52,7 @@ export default function TableLoja() {
     setEdit(false);
   };
 
-  if (!loja) return <div>Carregando...</div>;
+  if (!mounted || !loja) return <div>Carregando...</div>;
 
   return (
     <div className="md:mx-0 md:my-4 lg:m-4">

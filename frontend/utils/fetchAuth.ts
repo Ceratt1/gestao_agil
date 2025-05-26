@@ -1,5 +1,8 @@
 export async function fetchAuth(url: string, options: RequestInit = {}) {
-  const token = localStorage.getItem("token");
+  let token = "";
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token") || "";
+  }
   return fetch(url, {
     ...options,
     headers: {

@@ -39,7 +39,7 @@ export default function AdminUsuarios() {
 
   const fetchUsuarios = () => {
     setLoading(true);
-    fetch("/api/usuarios_lista")
+    fetchAuth("/api/usuarios_lista")
       .then(res => res.json())
       .then(data => {
         setUsuarios(data.usuarios);

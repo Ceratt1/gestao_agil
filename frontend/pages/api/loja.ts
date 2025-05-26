@@ -9,14 +9,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    // Pega o token do header Authorization enviado pelo frontend (ex: "Token abc123")
-    const authHeader = req.headers.authorization;
+    const authHeader = req.headers['authorization'] || req.headers['Authorization'];
+    console.log("Authorization header recebido:", authHeader);
 
     const fetchOptions: RequestInit = {
       method,
       headers: {
         "Content-Type": "application/json",
-        ...(authHeader ? { "Authorization": authHeader } : {}),
+        ...(authHeader ? { Authorization: authHeader as string } : {}),
       },
     };
 
