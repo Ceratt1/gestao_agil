@@ -172,7 +172,7 @@ export default function AdminProductForm({ produto, onSubmit }: ProductFormProps
       </div>
 
       {/* Botão para abrir submenu de edição de imagens */}
-      {produto.id && (
+      {Boolean(produto.id) && (
         <div>
           <Button
             type="button"
