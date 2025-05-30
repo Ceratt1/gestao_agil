@@ -1,16 +1,10 @@
+import { UsuarioAPI } from "@/@types/UsuarioAPI";
 import { Button } from "../ui/button";
-
-type UsuarioAPI = {
-  id: number;
-  username: string;
-  email: string;
-  regra?: string;
-};
 
 type TableUsuarioProps = {
   usuarios: UsuarioAPI[];
-  onEditar: (id: number) => void;
-  onExcluir: (id: number) => void;
+  onEditar: (id: string) => void;
+  onExcluir: (id: string) => void;
 };
 
 export default function TableUsuario({ usuarios = [], onEditar, onExcluir }: TableUsuarioProps) {

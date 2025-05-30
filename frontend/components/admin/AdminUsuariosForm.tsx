@@ -1,13 +1,7 @@
 import { Input } from '../ui/input'
 import { Button } from '../ui/button'
 import { fetchAuth } from "@/utils/fetchAuth";
-type UsuarioAPI = {
-  id: number;
-  username: string;
-  email: string;
-  regra?: string;
-  // contato_whatsapp?: string; // Removido do formulário
-};
+import { UsuarioAPI } from '@/@types/UsuarioAPI';
 
 type UsuarioFormProps = {
   usuario: UsuarioAPI;
@@ -20,7 +14,12 @@ export default function AdminUsuarioForm({ usuario, onSubmit }: UsuarioFormProps
     e.preventDefault();
     const form = e.currentTarget;
 
-    const payload: any = {
+    const payload: {
+      username: string;
+      email: string;
+      regra: string;
+      password?: string;
+    } = {
       username: (form.elements.namedItem('username') as HTMLInputElement)?.value || '',
       email: (form.elements.namedItem('email') as HTMLInputElement)?.value || '',
       regra: (form.elements.namedItem('regra') as HTMLInputElement)?.value || '',

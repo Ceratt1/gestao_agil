@@ -48,12 +48,12 @@ export default function AdminProductForm({ produto, onSubmit }: ProductFormProps
   };
 
   // Trocar imagem existente
-  const handleEditImageClick = (imgId: string) => {
-    setEditandoId(imgId);
-    setTimeout(() => {
-      editFileInputRef.current?.click();
-    }, 100);
-  };
+  // const handleEditImageClick = (imgId: string) => {
+  //   setEditandoId(imgId);
+  //   setTimeout(() => {
+  //     editFileInputRef.current?.click();
+  //   }, 100);
+  // };
 
   // Ao selecionar novo arquivo para editar imagem
   const handleEditFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {

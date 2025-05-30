@@ -33,7 +33,7 @@ export default function Header() {
     setLoadingLogout(true)
     try {
       const token = localStorage.getItem("token")
-      await fetch("http://localhost:8000/logout/", {
+      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/logout/`, {
         method: "POST",
         credentials: "include",
         headers: {

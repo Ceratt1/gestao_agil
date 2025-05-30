@@ -3,11 +3,11 @@ import { fetchAuth } from "@/utils/fetchAuth";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const { id } = req.query;
-  const baseUrl = "http://localhost:8000/api/produtos/";
+  const baseUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/produtos/`;
 
   if (req.method === "GET") {
     // Últimos 4 produtos (público)
-    const response = await fetch("http://localhost:8000/listar_ultimos_4produtos/");
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/listar_ultimos_4produtos/`);
     const data = await response.json();
     return res.status(200).json(data);
   }

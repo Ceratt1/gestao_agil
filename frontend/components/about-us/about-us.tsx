@@ -1,4 +1,5 @@
 import { Clock, Award, Shield } from "lucide-react"
+import Image from "next/image"
 
 export default function AboutUs() {
   return (
@@ -6,7 +7,7 @@ export default function AboutUs() {
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 gap-16 md:grid-cols-2 items-center">
           <div className="relative h-[500px] rounded-2xl overflow-hidden shadow-2xl">
-            <img src="/about-us.jpg" alt="Nossa loja" className="w-full h-full object-cover"/>
+            <Image src="/about-us.jpg" fill alt="Nossa loja" className="w-full h-full object-cover"/>
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
           </div>
 

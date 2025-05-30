@@ -16,7 +16,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     // GET: lista todos os usuários (protegido)
     if (method === "GET") {
-      const response = await fetch("http://localhost:8000/listar_usuarios/", fetchOptions);
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/listar_usuarios/`, fetchOptions);
       const data = await response.json();
       return res.status(response.status).json(data);
     }
@@ -24,7 +24,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // DELETE: deleta usuário pelo id
     if (method === "DELETE") {
       if (!id) return res.status(400).json({ error: "ID obrigatório para deletar" });
-      const response = await fetch(`http://localhost:8000/api/usuarios/${id}/deletar_usuario/`, fetchOptions);
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/usuarios/${id}/deletar_usuario/`, fetchOptions);
       const data = await response.json();
       return res.status(response.status).json(data);
     }
@@ -39,7 +39,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
       fetchOptions.body = body;
 
-      const response = await fetch(`http://localhost:8000/api/usuarios/${id}/atualizar_usuario/`, fetchOptions);
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/usuarios/${id}/atualizar_usuario/`, fetchOptions);
       const data = await response.json();
       return res.status(response.status).json(data);
     }

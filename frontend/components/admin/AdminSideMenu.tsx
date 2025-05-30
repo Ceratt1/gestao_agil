@@ -1,19 +1,15 @@
 "use client"
 
-import {LayoutDashboard, ChevronLeft, Grid, CalendarDays, Copy, Book, Home } from 'lucide-react';
+import {LayoutDashboard, Grid, Home} from 'lucide-react';
 import Link from 'next/link';
 
-interface SidebarOpenParameters {
-  open: boolean
-  toggleOpen: () => void
-}
-
-export default function SidebarMenu({isOpen, toggleOpen}: SidebarOpenParameters) {
+export default function SidebarMenu() {
   return (
     <nav className="w-64 bg-black text-white h-screen">
       <div className="p-4 border-b border-gray-700">
         <h3 className="flex items-center space-x-2">
           <img src="/logo.png" alt="Logo" className="h-8" />
+          {/* <img src="/logo.png" alt="Logo" className="h-8" /> */}
           <span className="text-lg font-semibold">ATR Mundial</span>
         </h3>
       </div>

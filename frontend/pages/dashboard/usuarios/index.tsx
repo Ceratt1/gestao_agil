@@ -6,16 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { fetchAuth } from "@/utils/fetchAuth";
 import DashboardGuard from "@/components/admin/DashboardGuard"; // <-- importe o guard
-
-type UsuarioAPI = {
-  id: string;
-  username: string;
-  email: string;
-  first_name?: string;
-  last_name?: string;
-  regra?: string;
-  contato_whatsapp?: string;
-};
+import { UsuarioAPI } from "@/@types/UsuarioAPI";
 
 export default function AdminUsuarios() {
   const popoverRef = useRef<HTMLDivElement>(null);

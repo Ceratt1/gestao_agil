@@ -1,6 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 
+
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Método não permitido" });
   }
@@ -9,7 +12,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const body =
       typeof req.body === "string" ? JSON.parse(req.body) : req.body;
 
-    const response = await fetch("http://localhost:8000/registro/", {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/registro/`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),

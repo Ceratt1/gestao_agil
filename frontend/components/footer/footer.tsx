@@ -1,6 +1,6 @@
 import Link from "next/link"
-import { Facebook, Instagram, MessageCircle, Mail, MapPin, Phone } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { MessageCircle, Mail, MapPin, Phone, Instagram, Facebook } from "lucide-react"
+
 
 export default function Footer() {
   const currentYear = new Date().getFullYear()

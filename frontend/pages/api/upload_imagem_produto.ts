@@ -13,7 +13,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const body = Buffer.concat(chunks);
 
     // Repassa o Content-Type original do upload
-    const fetchRes = await fetch("http://localhost:8000/api/upload_imagem_produto/", {
+    const fetchRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/upload_imagem_produto/`, {
       method: "POST",
       headers: {
         "Content-Type": req.headers["content-type"] || "",

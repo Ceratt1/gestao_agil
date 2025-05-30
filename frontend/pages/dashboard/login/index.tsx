@@ -7,11 +7,12 @@ export default function Login() {
   const [senha, setSenha] = useState("");
   const [mensagem, setMensagem] = useState("");
 
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setMensagem("");
 
-    const loginResponse = await fetch("http://localhost:8000/api-token-auth/", {
+    const loginResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api-token-auth/`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username: usuario, password: senha }),

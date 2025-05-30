@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react"
 import { ExternalLink, ShoppingBag, ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import Link from "next/link";
 
 type ProdutoAPI = {
   id: string | number
@@ -154,14 +155,13 @@ export default function FeaturedProducts() {
 
         <div className="mt-16 text-center">
           <Button asChild className="rounded-full bg-black text-white hover:bg-gray-800 px-8" size="lg">
-            <a
+            <Link
               href="/catalogo"
-              rel="noopener noreferrer"
               className="flex items-center gap-2"
             >
               Ver Catálogo Completo
               <ArrowRight size={16} />
-            </a>
+            </Link>
           </Button>
         </div>
       </div>

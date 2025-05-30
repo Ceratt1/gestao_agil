@@ -3,7 +3,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const method = req.method;
   const { id } = req.query;
-  let url = "http://localhost:8000/listar_produtos/";
+  let url = `${process.env.NEXT_PUBLIC_API_URL}/listar_produtos/`;
   if (id) url += `?id=${id}`;
 
   if (!["GET", "POST", "PUT", "DELETE"].includes(method || "")) {

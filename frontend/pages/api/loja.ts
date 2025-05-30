@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const method = req.method;
-  const url = "http://localhost:8000/loja/";
+  const url = `${process.env.NEXT_PUBLIC_API_URL}/loja/`;
 
   if (!["GET", "PUT", "PATCH"].includes(method || "")) {
     return res.status(405).json({ error: "Método não permitido" });

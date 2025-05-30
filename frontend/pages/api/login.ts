@@ -1,6 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+ 
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Método não permitido" });
   }
@@ -10,7 +12,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       typeof req.body === "string" ? JSON.parse(req.body) : req.body;
 
     // 1. Autentica pelo /login/
-    const loginRes = await fetch("http://localhost:8000/login/", {
+    const loginRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/login/`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username, password }),
@@ -22,7 +24,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     // 2. Pega o token e permissões pelo /api-token-auth/
-    const tokenRes = await fetch("http://localhost:8000/api-token-auth/", {
+    const tokenRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api-token-auth/`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username, password }),

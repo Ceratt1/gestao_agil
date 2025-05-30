@@ -18,6 +18,7 @@ import {
 import { Produtos } from "@/@types/Produtos"
 import { UUIDTypes } from "uuid"
 import { Categoria } from "@/@types/Categoria.enum"
+import { ProdutoAPI } from "@/@types/ProdutoAPI"
 
 export default function CatalogoHome() {
   const [produtos, setProdutos] = useState<Produtos[]>([])
@@ -35,7 +36,7 @@ export default function CatalogoHome() {
     fetch("/api/catalogo")
       .then(res => res.json())
       .then(data => {
-        const produtosApi: Produtos[] = data.produtos.map((p: any) => ({
+        const produtosApi: Produtos[] = data.produtos.map((p: ProdutoAPI) => ({
           uuid: p.id,
           nome: p.titulo,
           imagens: p.imagens || [],
@@ -67,8 +68,8 @@ export default function CatalogoHome() {
         filteredProdutos.forEach(produto => {
           const imagensLength = produto.imagens?.length || 0
           if (imagensLength > 1) {
-            const current = prev[produto.uuid] || 0
-            updated[produto.uuid] = (current + 1) % imagensLength
+            const current = prev[produto.uuid as string] || 0
+            updated[produto.uuid as string] = (current + 1) % imagensLength
           }
         })
         return updated
@@ -242,9 +243,9 @@ export default function CatalogoHome() {
                             src={img.imagem}
                             alt={produto.nome}
                             className={`object-cover transition-opacity duration-700 absolute inset-0 w-full h-full mx-auto ${
-                              idx === (carouselIndexes[produto.uuid] || 0) ? "opacity-100 z-10" : "opacity-0 z-0"
+                              idx === (carouselIndexes[produto.uuid as string] || 0) ? "opacity-100 z-10" : "opacity-0 z-0"
                             }`}
-                            style={{ pointerEvents: idx === (carouselIndexes[produto.uuid] || 0) ? "auto" : "none" }}
+                            style={{ pointerEvents: idx === (carouselIndexes[produto.uuid as string] || 0) ? "auto" : "none" }}
                           />
                         ))}
                         {/* Bolinhas */}
@@ -252,10 +253,10 @@ export default function CatalogoHome() {
                           {produto.imagens.map((img, idx) => (
                             <button
                               key={img.id}
-                              className={`w-3 h-3 rounded-full ${idx === (carouselIndexes[produto.uuid] || 0) ? "bg-black" : "bg-gray-300"} border border-white`}
+                              className={`w-3 h-3 rounded-full ${idx === (carouselIndexes[produto.uuid as string] || 0) ? "bg-black" : "bg-gray-300"} border border-white`}
                               style={{ outline: "none" }}
                               onClick={() =>
-                                setCarouselIndexes(prev => ({ ...prev, [produto.uuid]: idx }))
+                                setCarouselIndexes(prev => ({ ...prev, [produto.uuid as string]: idx }))
                               }
                               aria-label={`Selecionar imagem ${idx + 1}`}
                               tabIndex={0}
