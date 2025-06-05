@@ -61,9 +61,6 @@ celerybeat-schedule
 Pipfile
 Pipfile.lock
 
-# Pyenv
-.python-version
-
 # Logs and debug files
 *.log
 *.out
