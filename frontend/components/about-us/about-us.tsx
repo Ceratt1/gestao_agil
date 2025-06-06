@@ -17,11 +17,11 @@ export default function AboutUs() {
             </h2>
 
             <p className="mb-8 text-lg text-gray-700">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sit amet nulla auctor. Morbi quis nulla ac lectus convallis ultrices. Nulla facilisi. Integer quis nulla et eros pretium varius.
+              Há mais de 56 anos no mercado, a ATRmundial é referência em conserto de relógios quartz e mecânicos. Fundada em 1968 com o nome Larp e consolidada como ATRmundial a partir de 2000, nossa história é marcada por tradição, confiança e excelência técnica.
             </p>
 
             <p className="mb-10 text-lg text-gray-700">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sit amet nulla auctor, vestibulum magna sed, convallis ex. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Vivamus sit amet semper lacus, in mollis sapien. Nullam eget tellus sit amet nulla semper sodales.et eros pretium varius.
+              Mais do que clientes, cultivamos amizades e parcerias duradouras com lojas, assistências autorizadas e profissionais do setor. Também atuamos com venda de peças e relógios, sempre prezando pela qualidade e pelo atendimento humanizado.
             </p>
 
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
