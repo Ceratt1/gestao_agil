@@ -534,31 +534,10 @@ def upload_imagem_produto(request):
     if len(imagens) > 5:
         return Response({'error': 'Máximo de 5 imagens.'}, status=400)
 
-    # Configuração do S3
-    s3 = boto3.client(
-        's3',
-        aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
-        aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
-        region_name=getattr(settings, 'AWS_S3_REGION_NAME', None)
-    )
-    bucket_name = settings.AWS_STORAGE_BUCKET_NAME
-
     caminhos = []
-
     for img in imagens:
-        ext = img.name.split('.')[-1]
-        filename = f"produtos/{uuid4().hex}.{ext}"
-
-        s3.upload_fileobj(
-            img,
-            bucket_name,
-            filename,
-            ExtraArgs={'ACL': 'public-read', 'ContentType': img.content_type}
-        )
-
-        url = f"https://{bucket_name}.s3.amazonaws.com/{filename}"
-        caminhos.append(url)
-        ImagemProduto.objects.create(produto=produto, imagem=url)
+        obj = ImagemProduto.objects.create(produto=produto, imagem=img)
+        caminhos.append(obj.imagem.url)  # URL pública do S3
 
     return Response({'imagens': caminhos}, status=status.HTTP_200_OK)
 
@@ -579,8 +558,8 @@ def imagem_produto_detail(request, imagem_id):
     if request.method == 'GET':
         data = {
             'id': imagem.id,
-            'imagem': imagem.imagem,  # já é a URL do S3
-            'descricao': getattr(imagem, 'descricao', ''),
+            'imagem': imagem.imagem.url if imagem.imagem else None,  # URL pública do S3
+            'descricao': imagem.descricao,
             'produto_id': imagem.produto_id,
         }
         return Response(data)
@@ -592,24 +571,7 @@ def imagem_produto_detail(request, imagem_id):
         alterado = False
 
         if nova_imagem:
-            # Substitui a imagem no S3
-            s3 = boto3.client(
-                's3',
-                aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
-                aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
-                region_name=getattr(settings, 'AWS_S3_REGION_NAME', None)
-            )
-            bucket_name = settings.AWS_STORAGE_BUCKET_NAME
-            ext = nova_imagem.name.split('.')[-1]
-            filename = f"produtos/{uuid4().hex}.{ext}"
-            s3.upload_fileobj(
-                nova_imagem,
-                bucket_name,
-                filename,
-                ExtraArgs={'ACL': 'public-read', 'ContentType': nova_imagem.content_type}
-            )
-            url = f"https://{bucket_name}.s3.amazonaws.com/{filename}"
-            imagem.imagem = url
+            imagem.imagem = nova_imagem
             alterado = True
 
         if descricao is not None:
@@ -624,24 +586,5 @@ def imagem_produto_detail(request, imagem_id):
 
     # DELETE
     if request.method == 'DELETE':
-        try:
-            # Remove do S3 se quiser (opcional)
-            if imagem.imagem and imagem.imagem.startswith("http"):
-                s3 = boto3.client(
-                    's3',
-                    aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
-                    aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
-                    region_name=getattr(settings, 'AWS_S3_REGION_NAME', None)
-                )
-                bucket_name = settings.AWS_STORAGE_BUCKET_NAME
-                # Extrai o caminho do arquivo do S3
-                key = imagem.imagem.split(f"https://{bucket_name}.s3.amazonaws.com/")[-1]
-                try:
-                    s3.delete_object(Bucket=bucket_name, Key=key)
-                except Exception as e:
-                    print(f"Erro ao remover do S3: {e}")
-            imagem.delete()
-            return Response({'success': 'Imagem deletada com sucesso!'})
-        except Exception as e:
-            print(f"Erro ao deletar imagem do banco: {e}")
-            return Response({'error': f'Erro ao deletar imagem: {str(e)}'}, status=500)
+        imagem.delete()
+        return Response({'success': 'Imagem deletada com sucesso!'})
