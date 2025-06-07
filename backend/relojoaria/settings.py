@@ -120,7 +120,8 @@ AUTH_USER_MODEL = 'loja.Usuario'
 ALLOWED_HOSTS = ['*']
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
-    os.getenv('ALLOWED_ORIGIN'),
+    "https://www.atrmundial.com.br",
+     "http://localhost:3000",
 ]
 
 # AWS
