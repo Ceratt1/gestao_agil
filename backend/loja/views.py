@@ -537,8 +537,13 @@ def upload_imagem_produto(request):
 
     caminhos = []
     for img in imagens:
-        obj = ImagemProduto.objects.create(produto=produto, imagem=img)
-        caminhos.append(obj.imagem.url)  # URL pública do S3
+        try:
+            obj = ImagemProduto.objects.create(produto=produto, imagem=img)
+            # Força acesso à URL para garantir que salvou no S3
+            url = obj.imagem.url
+            caminhos.append(url)
+        except Exception as e:
+            return Response({'error': f'Erro ao salvar imagem: {str(e)}'}, status=500)
 
     return Response({'imagens': caminhos}, status=status.HTTP_200_OK)
 
