@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const { id } = req.query;
-  const backendUrl = `${process.env.BACKEND_URL}/api/imagem_produto/${id}/`;
+  const backendUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/imagem_produto/${id}/`;
 
   // Copie os headers relevantes
   const headers: Record<string, string> = {};
