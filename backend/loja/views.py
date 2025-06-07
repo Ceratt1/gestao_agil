@@ -337,11 +337,7 @@ def listar_produtos(request):
             imagens = [
                 {
                     'id': img.id,
-                    'imagem': (
-                        request.build_absolute_uri(img.imagem.url)
-                        if hasattr(img.imagem, 'url')
-                        else request.build_absolute_uri(f"/media/{img.imagem.lstrip('/')}")
-                    ),
+                    'imagem': img.imagem,  # <-- só retorna a URL salva
                     'descricao': getattr(img, 'descricao', ''),
                 }
                 for img in produto.imagens.all()
@@ -368,7 +364,7 @@ def listar_produtos(request):
                 imagens = [
                     {
                         'id': img.id,
-                        'imagem': request.build_absolute_uri(img.imagem.url if hasattr(img.imagem, 'url') else img.imagem),
+                        'imagem': img.imagem,  # <-- só retorna a URL salva
                         'descricao': getattr(img, 'descricao', ''),
                     }
                     for img in produto.imagens.all()
@@ -428,11 +424,7 @@ def listar_todos_produtos_publico(request):
         imagens = [
             {
                 'id': img.id,
-                'imagem': (
-                    request.build_absolute_uri(img.imagem.url)
-                    if hasattr(img.imagem, 'url')
-                    else request.build_absolute_uri(f"/media/{img.imagem.lstrip('/')}")
-                ),
+                'imagem': img.imagem,  # <-- só retorna a URL salva
                 'descricao': getattr(img, 'descricao', ''),
             }
             for img in produto.imagens.all()
@@ -462,11 +454,7 @@ def listar_ultimos_4produtos(request):
         imagens = [
             {
                 'id': img.id,
-                'imagem': (
-                    request.build_absolute_uri(img.imagem.url)
-                    if hasattr(img.imagem, 'url')
-                    else request.build_absolute_uri(f"/media/{img.imagem.lstrip('/')}")
-                ),
+                'imagem': img.imagem,  # <-- só retorna a URL salva
                 'descricao': getattr(img, 'descricao', ''),
             }
             for img in produto.imagens.all()
