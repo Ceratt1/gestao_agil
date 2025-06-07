@@ -144,3 +144,5 @@ STORAGES = {
         "BACKEND": "storages.backends.s3.S3Storage",
     },
 }
+
+DISABLE_COLLECTSTATIC=1
