@@ -24,6 +24,8 @@ from rest_framework.authtoken.models import Token
 from rest_framework.parsers import MultiPartParser, FormParser
 from django.conf import settings  
 import os  
+from uuid import uuid4
+import boto3
 
 # ================ SWAGGER SCHEMAS =========================
 
@@ -522,6 +524,11 @@ def loja_view(request):
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+
+
+
+
 @api_view(['POST'])
 @parser_classes([MultiPartParser, FormParser])
 def upload_imagem_produto(request):
@@ -539,18 +546,31 @@ def upload_imagem_produto(request):
     if len(imagens) > 5:
         return Response({'error': 'Máximo de 5 imagens.'}, status=400)
 
+    # Configuração do S3
+    s3 = boto3.client(
+        's3',
+        aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+        aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+        region_name=getattr(settings, 'AWS_S3_REGION_NAME', None)
+    )
+    bucket_name = settings.AWS_STORAGE_BUCKET_NAME
+
     caminhos = []
-    pasta = os.path.join(settings.MEDIA_ROOT, 'produtos')
-    os.makedirs(pasta, exist_ok=True)
 
     for img in imagens:
-        caminho = f"produtos/{img.name}"
-        destino = os.path.join(settings.MEDIA_ROOT, "produtos", img.name)
-        with open(destino, 'wb+') as f:
-            for chunk in img.chunks():
-                f.write(chunk)
-        caminhos.append(caminho)
-        ImagemProduto.objects.create(produto=produto, imagem=caminho)
+        ext = img.name.split('.')[-1]
+        filename = f"produtos/{uuid4().hex}.{ext}"
+
+        s3.upload_fileobj(
+            img,
+            bucket_name,
+            filename,
+            ExtraArgs={'ACL': 'public-read', 'ContentType': img.content_type}
+        )
+
+        url = f"https://{bucket_name}.s3.amazonaws.com/{filename}"
+        caminhos.append(url)
+        ImagemProduto.objects.create(produto=produto, imagem=url)
 
     return Response({'imagens': caminhos}, status=status.HTTP_200_OK)
 
@@ -571,11 +591,7 @@ def imagem_produto_detail(request, imagem_id):
     if request.method == 'GET':
         data = {
             'id': imagem.id,
-            'imagem': (
-                request.build_absolute_uri(imagem.imagem.url)
-                if hasattr(imagem.imagem, 'url')
-                else request.build_absolute_uri(f"/media/{imagem.imagem.lstrip('/')}")
-            ),
+            'imagem': imagem.imagem,  # já é a URL do S3
             'descricao': getattr(imagem, 'descricao', ''),
             'produto_id': imagem.produto_id,
         }
@@ -588,15 +604,24 @@ def imagem_produto_detail(request, imagem_id):
         alterado = False
 
         if nova_imagem:
-            if hasattr(imagem.imagem, 'save'):
-                imagem.imagem.save(nova_imagem.name, nova_imagem)
-            else:
-                caminho = os.path.join('produtos', nova_imagem.name).replace("\\", "/")
-                destino = os.path.join(settings.MEDIA_ROOT, caminho)
-                with open(destino, 'wb+') as f:
-                    for chunk in nova_imagem.chunks():
-                        f.write(chunk)
-                imagem.imagem = caminho  # <-- Salva só o caminho relativo!
+            # Substitui a imagem no S3
+            s3 = boto3.client(
+                's3',
+                aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+                aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+                region_name=getattr(settings, 'AWS_S3_REGION_NAME', None)
+            )
+            bucket_name = settings.AWS_STORAGE_BUCKET_NAME
+            ext = nova_imagem.name.split('.')[-1]
+            filename = f"produtos/{uuid4().hex}.{ext}"
+            s3.upload_fileobj(
+                nova_imagem,
+                bucket_name,
+                filename,
+                ExtraArgs={'ACL': 'public-read', 'ContentType': nova_imagem.content_type}
+            )
+            url = f"https://{bucket_name}.s3.amazonaws.com/{filename}"
+            imagem.imagem = url
             alterado = True
 
         if descricao is not None:
@@ -609,24 +634,24 @@ def imagem_produto_detail(request, imagem_id):
         else:
             return Response({'error': 'Nada para atualizar.'}, status=400)
 
-       # DELETE
+    # DELETE
     if request.method == 'DELETE':
         try:
-            if isinstance(imagem.imagem, str):
-                caminho_relativo = imagem.imagem
-                # Remove domínio se for URL absoluta
-                if caminho_relativo.startswith("http"):
-                    caminho_relativo = "/" + caminho_relativo.split("/media/", 1)[-1]
-                # Remove prefixo '/media/' se existir
-                if caminho_relativo.startswith("/media/"):
-                    caminho_relativo = caminho_relativo[len("/media/"):]
-                caminho_relativo = caminho_relativo.lstrip("/\\")
-                arquivo = os.path.join(settings.MEDIA_ROOT, caminho_relativo)
+            # Remove do S3 se quiser (opcional)
+            if imagem.imagem and imagem.imagem.startswith("http"):
+                s3 = boto3.client(
+                    's3',
+                    aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+                    aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+                    region_name=getattr(settings, 'AWS_S3_REGION_NAME', None)
+                )
+                bucket_name = settings.AWS_STORAGE_BUCKET_NAME
+                # Extrai o caminho do arquivo do S3
+                key = imagem.imagem.split(f"https://{bucket_name}.s3.amazonaws.com/")[-1]
                 try:
-                    if os.path.exists(arquivo):
-                        os.remove(arquivo)
-                except Exception as file_err:
-                    print(f"Erro ao remover arquivo físico: {file_err}")
+                    s3.delete_object(Bucket=bucket_name, Key=key)
+                except Exception as e:
+                    print(f"Erro ao remover do S3: {e}")
             imagem.delete()
             return Response({'success': 'Imagem deletada com sucesso!'})
         except Exception as e:
