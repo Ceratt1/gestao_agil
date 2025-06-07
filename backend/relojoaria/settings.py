@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     'loja',
     'drf_yasg',
     'rest_framework.authtoken',
+    'storages'
    
 ]
 
@@ -121,3 +122,11 @@ CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
     os.getenv('ALLOWED_ORIGIN'),
 ]
+
+# AWS
+AWS_ACCESS_KEY_ID = os.environ.get("AWS_ACCESS_KEY_ID")
+AWS_SECRET_ACCESS_KEY = os.environ.get("AWS_SECRET_ACCESS_KEY")
+
+# File storage
+AWS_STORAGE_BUCKET_NAME = os.environ.get("AWS_STORAGE_BUCKET_NAME")
+AWS_S3_REGION_NAME = os.environ.get("AWS_S3_REGION_NAME")
