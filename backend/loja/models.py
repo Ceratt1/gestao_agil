@@ -65,3 +65,11 @@ class ImagemProduto(models.Model):
 
     def __str__(self):
         return f"Imagem de {self.produto.titulo}"
+    
+    
+    def delete(self, *args, **kwargs):
+        storage = self.imagem.storage
+        name = self.imagem.name
+        super().delete(*args, **kwargs)
+        if name:
+            storage.delete(name)

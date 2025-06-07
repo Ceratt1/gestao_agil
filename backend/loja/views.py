@@ -455,7 +455,7 @@ def listar_ultimos_4produtos(request):
         imagens = [
             {
                 'id': img.id,
-                'imagem': img.imagem,  # <-- só retorna a URL salva
+                'imagem': img.imagem.url if img.imagem else None,  # <-- agora retorna a URL pública
                 'descricao': getattr(img, 'descricao', ''),
             }
             for img in produto.imagens.all()
@@ -467,8 +467,8 @@ def listar_ultimos_4produtos(request):
             'descricao': produto.descricao,
             'valor': str(produto.valor),
             'categoria': produto.categoria,
-            'imagens': imagens,           # <-- todas as imagens para o carrossel
-            'imagem': imagem_principal,   # <-- mantém para compatibilidade
+            'imagens': imagens,           # todas as imagens para o carrossel
+            'imagem': imagem_principal,   # mantém para compatibilidade
         })
     return Response({'produtos': data}, status=status.HTTP_200_OK)
 
@@ -560,17 +560,15 @@ def imagem_produto_detail(request, imagem_id):
     except ImagemProduto.DoesNotExist:
         return Response({'error': 'Imagem não encontrada.'}, status=404)
 
-    # GET
     if request.method == 'GET':
         data = {
             'id': imagem.id,
-            'imagem': imagem.imagem.url if imagem.imagem else None,  # URL pública do S3
+            'imagem': imagem.imagem.url if imagem.imagem else None,
             'descricao': imagem.descricao,
             'produto_id': imagem.produto_id,
         }
         return Response(data)
 
-    # PUT/PATCH
     if request.method in ['PUT', 'PATCH']:
         nova_imagem = request.FILES.get('imagem')
         descricao = request.data.get('descricao')
@@ -590,7 +588,6 @@ def imagem_produto_detail(request, imagem_id):
         else:
             return Response({'error': 'Nada para atualizar.'}, status=400)
 
-    # DELETE
     if request.method == 'DELETE':
         imagem.delete()
         return Response({'success': 'Imagem deletada com sucesso!'})
