@@ -315,7 +315,8 @@ def get_produto(request, id):
         return Response(serializer.data, status=status.HTTP_200_OK)
     except Produto.DoesNotExist:
         return Response({'error': 'Produto não encontrado'}, status=404)
-
+    
+    
 @api_view(['GET', 'POST', 'PUT', 'DELETE'])
 @permission_classes([IsAdminOrStaffOrRegraAdmin])
 def listar_produtos(request):
@@ -337,7 +338,7 @@ def listar_produtos(request):
             imagens = [
                 {
                     'id': img.id,
-                    'imagem': img.imagem,  # <-- só retorna a URL salva
+                    'imagem': img.imagem.url if img.imagem else None,  # <-- agora retorna a URL pública
                     'descricao': getattr(img, 'descricao', ''),
                 }
                 for img in produto.imagens.all()
@@ -364,7 +365,7 @@ def listar_produtos(request):
                 imagens = [
                     {
                         'id': img.id,
-                        'imagem': img.imagem,  # <-- só retorna a URL salva
+                        'imagem': img.imagem.url if img.imagem else None,  # <-- agora retorna a URL pública
                         'descricao': getattr(img, 'descricao', ''),
                     }
                     for img in produto.imagens.all()
