@@ -60,7 +60,7 @@ class Loja(models.Model):
 class ImagemProduto(models.Model):
     id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True, primary_key=True)
     produto = models.ForeignKey(Produto, related_name='imagens', on_delete=models.CASCADE)
-    imagem = models.CharField(max_length=512)  # ou models.ImageField(upload_to='produtos/') se usar upload real
+    imagem = models.ImageField(upload_to='produtos/')  
     descricao = models.CharField(max_length=255, blank=True)
 
     def __str__(self):
