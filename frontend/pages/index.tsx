@@ -4,6 +4,7 @@ import FeaturedProducts from "@/components/products/feature-products"
 import AboutUs from "@/components/about-us/about-us"
 import Footer from "@/components/footer/footer"
 import WatchRepairServices from "@/components/reparos/reparoServicos"
+import AntesDepois from "@/components/antesdepois/antesdepois"
 
 export default function Home() {
   return (
@@ -18,6 +19,7 @@ export default function Home() {
       </div>
       <FeaturedProducts />
       <WatchRepairServices />
+      <AntesDepois />
       <AboutUs />
       <Footer />
     </main>

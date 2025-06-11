@@ -48,7 +48,7 @@ export default function WatchRepairServices() {
   ]
 
   return (
-    <div className="min-h-screen ">
+    <div id="reparos" className="min-h-screen ">
       <div className="container mx-auto px-4 py-16">
         <div className="mb-16 text-center">
           <h1 className="mb-4 text-4xl font-bold tracking-tight md:text-5xl lg:text-6xl text-black">Serviços da <span className="text-orange-400">ATRmundial</span></h1>
@@ -78,7 +78,7 @@ export default function WatchRepairServices() {
           >
             <span className="relative z-10 flex items-center gap-2">
               <MessageSquare className="h-5 w-5" />
-              Agende seu serviço via WhatsApp
+              Agende seu Serviço via WhatsApp
             </span>
             <span className="absolute bottom-0 left-0 h-1 w-full bg-white transition-all duration-300 group-hover:h-full group-hover:opacity-10"></span>
           </Button>

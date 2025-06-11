@@ -78,7 +78,19 @@ export default function Header() {
             href="/#produtos"
             className="text-sm font-medium text-black hover:text-gray-600 transition-colors relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-black after:transition-all hover:after:w-full"
           >
-            Coleção
+            Produtos
+          </Link>
+          <Link
+            href="/#reparos"
+            className="text-sm font-medium text-black hover:text-gray-600 transition-colors relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-black after:transition-all hover:after:w-full"
+          >
+            Serviços
+          </Link>
+          <Link
+            href="/#antesdepois"
+            className="text-sm font-medium text-black hover:text-gray-600 transition-colors relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-black after:transition-all hover:after:w-full"
+          >
+            Antes e Depois
           </Link>
           <Link
             href="/#sobre"
@@ -91,12 +103,6 @@ export default function Header() {
             className="text-sm font-medium text-black hover:text-gray-600 transition-colors relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-black after:transition-all hover:after:w-full"
           >
             Contato
-          </Link>
-          <Link
-            href="/#reparos"
-            className="text-sm font-medium text-black hover:text-gray-600 transition-colors relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-black after:transition-all hover:after:w-full"
-          >
-            Reparos
           </Link>
           {isAdmin && (
             <Link
@@ -113,7 +119,7 @@ export default function Header() {
           <div className="hidden md:flex items-center space-x-4">
             <Button className="rounded-full bg-black text-white hover:bg-gray-800" size="sm">
               <a href="https://wa.me/555197274193" target="_blank" rel="noopener noreferrer">
-                Contato
+                WhatsApp
               </a>
             </Button>
             <Link href="/dashboard/login">
@@ -121,7 +127,7 @@ export default function Header() {
                 Login
               </Button>
             </Link>
-              <Link href="/dashboard/registro">
+            <Link href="/dashboard/registro">
               <Button className="rounded-full bg-orange-400 text-white hover:bg-orange-500" size="sm">
                 Registro
               </Button>

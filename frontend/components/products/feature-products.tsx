@@ -159,7 +159,7 @@ export default function FeaturedProducts() {
               href="/catalogo"
               className="flex items-center gap-2"
             >
-              Ver Catálogo Completo
+              Ver catálogo de Produtos
               <ArrowRight size={16} />
             </Link>
           </Button>
